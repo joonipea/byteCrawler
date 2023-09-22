@@ -67,10 +67,11 @@ const GameOverScreen = () => {
             let length = deadChime.duration * 1000;
             setTimeout(() => {
                 request.send();
-                stopRef.current.addEventListener("click", () => {
-                    source.stop();
-                });
             }, length);
+        });
+        stopRef.current.addEventListener("click", () => {
+            deadChime.pause();
+            audio_context.close();
         });
     }, []);
 

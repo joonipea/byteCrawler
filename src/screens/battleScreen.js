@@ -354,6 +354,8 @@ const BattleScreen = ({
                         const runChance = Math.random();
                         if (runChance > 0.5) {
                             document.addEventListener("keydown", handleKeys);
+                            stopRef.current.click();
+                            mapMusic.click();
                             setParent([]);
                         } else {
                             setPlayerState("evading");
