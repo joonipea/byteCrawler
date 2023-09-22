@@ -11,6 +11,7 @@ import LevelUpScreen from "./levelUpScreen";
 
 const MapScreen = () => {
     const [context, setContext] = useContext(AppContext);
+    const [nextFloor, setNextFloor] = useState({});
     const [battleScreen, setBattleScreen] = useState([]);
     const [levelUpScreen, setLevelUpScreen] = useState([]);
     const mapRef = useRef(null);
@@ -146,12 +147,31 @@ const MapScreen = () => {
         map.style.clipPath = `circle(calc(75 / 21 * 3lvmin - 2px) at ${playerCenter.x}px ${playerCenter.y}px)`;
     }
 
-    function nextMap() {
-        setContext((oldContext) => {
-            return {
-                ...oldContext,
-                map: oldContext.maps[oldContext.map.floor],
-            };
+    const nextMap = useCallback(() => {
+        let contextCopy = contextRef.current;
+        if (!contextCopy.maps[contextCopy.map.floor]) {
+            generateMap(contextCopy.worldName, contextCopy.map.floor)
+                .then((res) => res.json())
+                .then((newFloor) => {
+                    setNextFloor(newFloor[0]);
+                });
+        } else {
+            setContext((oldContext) => {
+                return {
+                    ...oldContext,
+                    map: oldContext.maps[oldContext.map.floor],
+                };
+            });
+        }
+    }, []);
+
+    async function generateMap(name, floor) {
+        return fetch(process.env.REACT_APP_MIDDLEWARE_URL + "/generateMap", {
+            method: "GET",
+            headers: {
+                user: name,
+                floor: floor,
+            },
         });
     }
 
@@ -286,6 +306,18 @@ const MapScreen = () => {
             );
         }
     }, [context.map.map]);
+
+    useEffect(() => {
+        if (nextFloor.map) {
+            setContext((oldContext) => {
+                return {
+                    ...oldContext,
+                    maps: [...oldContext.maps, nextFloor],
+                    map: nextFloor,
+                };
+            });
+        }
+    }, [nextFloor]);
 
     useEffect(() => {
         //this is the webaudio loooooppppppp
