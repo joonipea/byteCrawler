@@ -33,6 +33,57 @@ const GameOverScreen = () => {
         stopRef.current.click();
     }
 
+    async function townScreen() {
+        let townMap = await getTownMap();
+        let character = await getNewCharacter();
+        let newCharacter =
+            character[Math.floor(Math.random() * character.length)];
+        setContext((oldContext) => {
+            return {
+                ...oldContext,
+                map: townMap,
+                screen: "map",
+                character: newCharacter,
+                score: 0,
+            };
+        });
+        stopRef.current.click();
+    }
+
+    async function getTownMap() {
+        let townMap;
+        let response = await fetch(
+            process.env.REACT_APP_MIDDLEWARE_URL + "/generateTown",
+            {
+                method: "GET",
+                headers: {
+                    user: context.worldName,
+                    floor: 0,
+                },
+            }
+        );
+        let data = await response.json();
+        townMap = data[0];
+        return townMap;
+    }
+
+    async function getNewCharacter() {
+        let character;
+        let response = await fetch(
+            process.env.REACT_APP_MIDDLEWARE_URL + "/get",
+            {
+                method: "GET",
+                headers: {
+                    user: context.worldName,
+                    record: "chars",
+                },
+            }
+        );
+        let data = await response.json();
+        character = data;
+        return character;
+    }
+
     useEffect(() => {
         var url = "./music/GAME OVER.wav";
         let audio_context = new AudioContext();
@@ -87,6 +138,9 @@ const GameOverScreen = () => {
             </button>
             <button onClick={() => loadScreen()} className="btn">
                 Continue
+            </button>
+            <button onClick={() => townScreen()} className="btn">
+                Return to town
             </button>
         </div>
     );

@@ -8,10 +8,12 @@ import React, {
 import { AppContext } from "../appContext";
 import BattleScreen from "./battleScreen";
 import LevelUpScreen from "./levelUpScreen";
+import LoadingScreen from "./loadingScreen";
 
 const MapScreen = () => {
     const [context, setContext] = useContext(AppContext);
     const [nextFloor, setNextFloor] = useState({});
+    const [loadingScreen, setLoadingScreen] = useState([]);
     const [battleScreen, setBattleScreen] = useState([]);
     const [levelUpScreen, setLevelUpScreen] = useState([]);
     const mapRef = useRef(null);
@@ -86,6 +88,8 @@ const MapScreen = () => {
             nextCell = player.nextElementSibling;
         }
         if (nextCell && nextCell.classList.contains("exit")) {
+            document.removeEventListener("keydown", handleKeys);
+            setLoadingScreen(<LoadingScreen></LoadingScreen>);
             nextMap();
         }
         if (nextCell && isMob(nextCell)) {
@@ -127,6 +131,16 @@ const MapScreen = () => {
             });
         }
 
+        if (nextCell && nextCell.classList.contains("dungeon")) {
+            //put the player in the first floor of the dungeon
+            setContext((oldContext) => {
+                return {
+                    ...oldContext,
+                    map: oldContext.maps[0],
+                };
+            });
+        }
+
         if (nextCell && nextCell.classList.contains("save")) {
             saveGame();
         }
@@ -154,6 +168,8 @@ const MapScreen = () => {
                 .then((res) => res.json())
                 .then((newFloor) => {
                     setNextFloor(newFloor[0]);
+                    setLoadingScreen([]);
+                    document.addEventListener("keydown", handleKeys);
                 });
         } else {
             setContext((oldContext) => {
@@ -162,6 +178,8 @@ const MapScreen = () => {
                     map: oldContext.maps[oldContext.map.floor],
                 };
             });
+            setLoadingScreen([]);
+            document.addEventListener("keydown", handleKeys);
         }
     }, []);
 
@@ -275,8 +293,9 @@ const MapScreen = () => {
             });
         }
         if (
+            context.character &&
             score >
-            context.character.level ** 1.3 * context.character.rarity * 500
+                context.character.level ** 1.3 * context.character.rarity * 500
         ) {
             setLevelUpScreen(
                 <LevelUpScreen setParent={setLevelUpScreen}></LevelUpScreen>
@@ -375,6 +394,7 @@ const MapScreen = () => {
         <div>
             <div ref={stopRef}></div>
             {battleScreen}
+            {loadingScreen}
             {levelUpScreen}
             <p style={{ textAlign: "center" }}>
                 Floor {context.map.floor}: {context.map.name} - Score:{" "}

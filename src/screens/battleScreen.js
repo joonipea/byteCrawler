@@ -42,11 +42,9 @@ const BattleScreen = ({
     function battleOrder() {
         const enemyRoll =
             Math.floor(Math.random() * 20) +
-            1 +
             Math.floor(Math.random() * mobData.stats.luck);
         const playerRoll =
             Math.floor(Math.random() * 20) +
-            1 +
             Math.floor(Math.random() * context.character.stats.luck);
         if (enemyRoll > playerRoll) {
             return "enemy";
@@ -83,7 +81,7 @@ const BattleScreen = ({
     }
 
     function calcDamage(luck, attack) {
-        const damage = Math.floor(Math.random() * attack) + 1;
+        const damage = Math.floor(Math.random() * attack);
         const critChance = Math.floor(Math.random() * 20) + 1 + luck / 20;
         const secondHit = Math.floor(Math.random() * luck) + 1;
         if (critChance > 19) {
