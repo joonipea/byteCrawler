@@ -81,7 +81,9 @@ const BattleScreen = ({
     }
 
     function calcDamage(luck, attack) {
-        const damage = Math.floor(Math.random() * attack);
+        const damage = Math.floor(
+            Math.random() * (attack - (attack + luck) / 2) + (attack + luck) / 2
+        );
         const critChance = Math.floor(Math.random() * 20) + 1 + luck / 20;
         const secondHit = Math.floor(Math.random() * luck) + 1;
         if (critChance > 19) {
