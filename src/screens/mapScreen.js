@@ -47,17 +47,21 @@ const MapScreen = () => {
 
     //bind arrowkeys to movement
     const handleKeys = useCallback((e) => {
-        if (e.key === "ArrowUp") {
-            movePlayer("up");
-        }
-        if (e.key === "ArrowDown") {
-            movePlayer("down");
-        }
-        if (e.key === "ArrowLeft") {
-            movePlayer("left");
-        }
-        if (e.key === "ArrowRight") {
-            movePlayer("right");
+        switch (e.key) {
+            case "ArrowUp":
+                movePlayer("up");
+                break;
+            case "ArrowDown":
+                movePlayer("down");
+                break;
+            case "ArrowLeft":
+                movePlayer("left");
+                break;
+            case "ArrowRight":
+                movePlayer("right");
+                break;
+            default:
+                break;
         }
     }, []);
 
@@ -284,18 +288,18 @@ const MapScreen = () => {
     }, [tick]);
 
     useEffect(() => {
-        if (score > 0) {
-            setContext((oldContext) => {
-                return {
-                    ...oldContext,
-                    score: score,
-                };
-            });
-        }
+        if (score <= 0) return;
+
+        setContext((oldContext) => {
+            return {
+                ...oldContext,
+                score: score,
+            };
+        });
+
         if (
-            context.character &&
             score >
-                context.character.level ** 1.3 * context.character.rarity * 500
+            context.character.level ** 1.3 * context.character.rarity * 500
         ) {
             setLevelUpScreen(
                 <LevelUpScreen setParent={setLevelUpScreen}></LevelUpScreen>
@@ -304,38 +308,37 @@ const MapScreen = () => {
     }, [score]);
 
     useEffect(() => {
-        if (gold > 0) {
-            setContext((oldContext) => {
-                return {
-                    ...oldContext,
-                    gold: gold,
-                };
-            });
-        }
+        if (gold <= 0) return;
+
+        setContext((oldContext) => {
+            return {
+                ...oldContext,
+                gold: gold,
+            };
+        });
     }, [gold]);
 
     useEffect(() => {
-        if (context.map.map) {
-            mapRef.current.innerHTML = "";
-            document.removeEventListener("keydown", handleKeys);
-            createMap(context.map.map);
-            spotlight(
-                document.getElementById("map"),
-                document.querySelector(".player")
-            );
-        }
+        if (!context.map.map) return;
+
+        mapRef.current.innerHTML = "";
+        document.removeEventListener("keydown", handleKeys);
+        createMap(context.map.map);
+        spotlight(
+            document.getElementById("map"),
+            document.querySelector(".player")
+        );
     }, [context.map.map]);
 
     useEffect(() => {
-        if (nextFloor.map) {
-            setContext((oldContext) => {
-                return {
-                    ...oldContext,
-                    maps: [...oldContext.maps, nextFloor],
-                    map: nextFloor,
-                };
-            });
-        }
+        if (!nextFloor.map) return;
+        setContext((oldContext) => {
+            return {
+                ...oldContext,
+                maps: [...oldContext.maps, nextFloor],
+                map: nextFloor,
+            };
+        });
     }, [nextFloor]);
 
     useEffect(() => {
