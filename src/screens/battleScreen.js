@@ -19,6 +19,8 @@ const BattleScreen = ({
     const [mobAttack, setMobAttack] = useState("");
     const [playerAttack, setPlayerAttack] = useState("");
     const stopRef = useRef();
+    const playerDamageRef = useRef();
+    const mobDamageRef = useRef();
     var audio_context;
 
     useEffect(() => {
@@ -38,7 +40,6 @@ const BattleScreen = ({
             });
     }, [mob]);
 
-    // set battle order
     function battleOrder() {
         const enemyRoll =
             Math.floor(Math.random() * 20) +
@@ -97,14 +98,11 @@ const BattleScreen = ({
     function battleTurn(
         attacker,
         attackerState,
-        setAttackerHealth,
-        setAttackerState,
         setAttackerMessage,
         defender,
         defenderState,
         setDefenderHealth,
-        setDefenderState,
-        setDefenderMessage
+        defenderDamageRef
     ) {
         const hitChance = Math.floor(Math.random() * 20) + 1;
         const evadeChance =
@@ -138,17 +136,41 @@ const BattleScreen = ({
             if (defenderState === "attacking" || defenderState === "neutral") {
                 setDefenderHealth(damage);
                 setAttackerMessage(message);
+                defenderDamageRef.innerText = `-${damage}`;
+                defenderDamageRef.style.color = "red";
             } else if (defenderState === "evading") {
                 if (evadeChance > hitChance) {
                     setDefenderHealth(damage);
                     setAttackerMessage(message);
+                    defenderDamageRef.innerText = `-${damage}`;
+                    defenderDamageRef.style.color = "red";
                 } else {
                     setAttackerMessage(evadeMessage);
+                    defenderDamageRef.innerText = "Miss";
+                    defenderDamageRef.style.color = "white";
                 }
             } else if (defenderState === "defending") {
                 setDefenderHealth(damage - defender.stats.defense);
                 setAttackerMessage(defenceMessage);
+                defenderDamageRef.innerText =
+                    damage - defender.stats.defense > 0
+                        ? `-${damage - defender.stats.defense}`
+                        : `+${Math.abs(damage - defender.stats.defense)}`;
+                defenderDamageRef.style.color =
+                    damage - defender.stats.defense > 0 ? "red" : "#7bff7b";
             }
+
+            if (defender.stats.health <= 0) {
+                if (defender.name === context.character.name) {
+                    setAttackerMessage(`${attackerName} has been defeated.`);
+                }
+            }
+            defenderDamageRef.style.opacity = 1;
+            defenderDamageRef.style.animation = "floatAway 1s ease-in-out 1";
+            setTimeout(() => {
+                defenderDamageRef.style.animation = "";
+                defenderDamageRef.style.opacity = 0;
+            }, 1000);
         }
     }
 
@@ -156,6 +178,7 @@ const BattleScreen = ({
         if (!mobData.stats || playerState === "neutral") {
             return;
         }
+        lockOptions();
         setPlayerAttack("");
         setMobAttack("");
         setEnemyState("attacking");
@@ -164,80 +187,108 @@ const BattleScreen = ({
             setAttackerHealth,
             setAttackerState,
             setAttackerMessage,
+            attackerDamageRef,
             defender,
             defenderState,
             setDefenderHealth,
             setDefenderState,
-            setDefenderMessage;
+            setDefenderMessage,
+            defenderDamageRef;
         if (battleOrder() === "enemy") {
             attacker = mobData;
             attackerState = enemyState;
             setAttackerHealth = damageMob;
             setAttackerState = setEnemyState;
             setAttackerMessage = setMobAttack;
+            attackerDamageRef = mobDamageRef.current;
             defender = context.character;
             defenderState = playerState;
             setDefenderHealth = setPlayerHealth;
             setDefenderState = setPlayerState;
             setDefenderMessage = setPlayerAttack;
+            defenderDamageRef = playerDamageRef.current;
         } else {
             attacker = context.character;
             attackerState = playerState;
             setAttackerHealth = setPlayerHealth;
             setAttackerState = setPlayerState;
             setAttackerMessage = setPlayerAttack;
+            attackerDamageRef = playerDamageRef.current;
             defender = mobData;
             defenderState = enemyState;
             setDefenderHealth = damageMob;
             setDefenderState = setEnemyState;
             setDefenderMessage = setMobAttack;
+            defenderDamageRef = mobDamageRef.current;
         }
         battleTurn(
             attacker,
             attackerState,
-            setAttackerHealth,
-            setAttackerState,
             setAttackerMessage,
             defender,
             defenderState,
             setDefenderHealth,
-            setDefenderState,
-            setDefenderMessage
+            defenderDamageRef
         );
         battleTurn(
             defender,
             defenderState,
-            setDefenderHealth,
-            setDefenderState,
             setDefenderMessage,
             attacker,
             attackerState,
             setAttackerHealth,
-            setAttackerState,
-            setAttackerMessage
+            attackerDamageRef
         );
-        setPlayerState("neutral");
+        setTimeout(() => {
+            setPlayerState("neutral");
+            unlockOptions();
+        }, 1000);
     }, [playerState]);
 
+    function lockOptions() {
+        document.querySelectorAll(".btn").forEach((btn) => {
+            btn.disabled = true;
+        });
+    }
+
+    function unlockOptions() {
+        document.querySelectorAll(".btn").forEach((btn) => {
+            btn.disabled = false;
+        });
+    }
+
     function victory() {
+        lockOptions();
+        const enemyDiv = document.querySelector(".enemy-battler");
         const drops = mobData.drops;
         const expMultiplier =
             context.character.inventory &&
             context.character.inventory.includes("Rabbit's Foot")
                 ? 1.5
                 : 1;
+        let exp = 0;
         for (let drop of drops) {
+            exp += Math.ceil(drop.price * expMultiplier);
             setScore(
                 (oldScore) => oldScore + Math.ceil(drop.price * expMultiplier)
             );
         }
 
-        cell.classList.remove(mob);
-        cell.classList.add("floor");
-        stopRef.current.click();
-        mapMusic.click();
-        document.addEventListener("keydown", handleKeys);
-        setParent([]);
+        enemyDiv.style.animation = "floatAway 0.5s ease-in-out 1";
+        enemyDiv.style.opacity = 0;
+        setMobAttack("");
+        setPlayerAttack(
+            `${context.character.name} has defeated ${mobName}! ${context.character.name} gains ${exp} experience.`
+        );
+
+        setTimeout(() => {
+            cell.classList.remove(mob);
+            cell.classList.add("floor");
+            stopRef.current.click();
+            mapMusic.click();
+            document.addEventListener("keydown", handleKeys);
+            setParent([]);
+        }, 2000);
     }
 
     useEffect(() => {
@@ -251,7 +302,9 @@ const BattleScreen = ({
         )
             return;
         if (mobHealth <= 0) {
-            victory();
+            setTimeout(() => {
+                victory();
+            }, 1000);
         }
     }, [mobHealth]);
 
@@ -291,38 +344,31 @@ const BattleScreen = ({
 
     useEffect(() => {
         mapMusic.click();
-        //this is the webaudio loooooppppppp
-        //enter url in the next line
+
         var url = "./music/FIGHT.wav";
 
-        /* --- set up web audio --- */
-        //create the context
         audio_context = new AudioContext();
 
-        //...and the source
         var source = audio_context.createBufferSource();
-        //connect it to the destination so you can hear it.
+
         const gainNode = audio_context.createGain();
 
         gainNode.gain.value = context.volume / 100;
         gainNode.connect(audio_context.destination);
         source.connect(gainNode);
 
-        /* --- load buffer ---  */
         var request = new XMLHttpRequest();
-        //open the request
+
         request.open("GET", url, true);
-        //webaudio paramaters
+
         request.responseType = "arraybuffer";
-        //Once the request has completed... do this
+
         request.onload = function () {
             audio_context.decodeAudioData(
                 request.response,
                 function (response) {
-                    /* --- play the sound AFTER the buffer loaded --- */
-                    //set the buffer to the response we just received.
                     source.buffer = response;
-                    //start(0) should play asap.
+
                     source.start(0);
                     source.loop = true;
                 },
@@ -335,7 +381,7 @@ const BattleScreen = ({
             source.stop();
             audio_context.close();
         });
-        //Now that the request has been defined, actually make the request. (send it)
+
         request.send();
     }, []);
 
@@ -343,14 +389,16 @@ const BattleScreen = ({
         <div id="battle-screen">
             <div ref={stopRef}></div>
             <div className="entity-container">
-                <div className="enemy-battler">
+                <div className="enemy-battler sprite-container">
+                    <div ref={mobDamageRef} className="damage-message"></div>
                     <div className="enemy-battler-name">{mobName}</div>
                     <div className="enemy-battler-hp">
                         {mobHealth} / {mobMaxHealth}
                     </div>
                     <div className="enemy-sprite"></div>
                 </div>
-                <div className="player-battler">
+                <div className="player-battler sprite-container">
+                    <div ref={playerDamageRef} className="damage-message"></div>
                     <div className="player-battler-name">
                         {context.character.name}
                     </div>
