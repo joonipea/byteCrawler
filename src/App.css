@@ -60,7 +60,14 @@ input {
     cursor: pointer;
     transition: all 0.2s ease-in-out;
 }
-.btn:hover {
+.btn:disabled {
+    background-color: var(--background-color);
+    color: var(--primary-color);
+    opacity: 0.5;
+    cursor: default;
+}
+
+.btn:hover:not([disabled]) {
     background-color: var(--primary-color);
     color: var(--background-color);
 }
@@ -118,6 +125,18 @@ div[class*=" dungeon"] {
     background-color: purple;
 }
 
+div[class*=" monolith"] {
+    background-color: rgb(99, 111, 151);
+}
+
+div[class*=" merchant"] {
+    background-color: rgb(152, 255, 160);
+}
+
+div[class*=" temple"] {
+    background-color: rgb(255, 152, 152);
+}
+
 div[class*=" floor"] {
     background-color: grey;
 }
@@ -147,6 +166,23 @@ div[class*=" mobs"] {
     height: 100%;
     z-index: 2;
     font-size: 24px;
+}
+
+.dialog-screen {
+    position: absolute;
+    border: white 2px solid;
+    background-color: var(--background-color);
+    width: 75%;
+    padding: 0 50px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    z-index: 2;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 0);
 }
 .entity-container {
     display: flex;
@@ -186,13 +222,15 @@ div[class*=" mobs"] {
     display: flex;
     flex-direction: column;
     position: absolute;
-
     width: 75%;
     align-items: center;
-
-    left: 12%;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
     background: var(--background-color);
-    z-index: 2;
+    z-index: 3;
+    border: 2px solid var(--primary-color);
+    padding: 20px;
 }
 
 .stat-container {
@@ -368,7 +406,7 @@ http://aleclownes.com/2017/02/01/crt-display.html
     right: 0;
     background: rgba(18, 16, 16, 0.1);
     opacity: 0;
-    z-index: 3;
+    z-index: 4;
     pointer-events: none;
     animation: flicker 0.15s infinite;
 }
@@ -390,7 +428,7 @@ http://aleclownes.com/2017/02/01/crt-display.html
             rgba(0, 255, 0, 0.02),
             rgba(0, 0, 255, 0.06)
         );
-    z-index: 3;
+    z-index: 4;
     background-size: 100% 2px, 3px 100%;
     pointer-events: none;
 }

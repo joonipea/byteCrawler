@@ -221,8 +221,15 @@ const BattleScreen = ({
 
     function victory() {
         const drops = mobData.drops;
+        const expMultiplier =
+            context.character.inventory &&
+            context.character.inventory.includes("Rabbit's Foot")
+                ? 1.5
+                : 1;
         for (let drop of drops) {
-            setScore((oldScore) => oldScore + drop.price);
+            setScore(
+                (oldScore) => oldScore + Math.ceil(drop.price * expMultiplier)
+            );
         }
 
         cell.classList.remove(mob);
@@ -235,13 +242,42 @@ const BattleScreen = ({
 
     useEffect(() => {
         if (!mobData.stats) return;
-        if (context.character.stats.health <= 0) return;
+        if (
+            context.character.stats.health <= 0 &&
+            !(
+                context.character.inventory &&
+                context.character.inventory.includes("Phoenix Plume")
+            )
+        )
+            return;
         if (mobHealth <= 0) {
             victory();
         }
     }, [mobHealth]);
 
     useEffect(() => {
+        if (
+            context.character.stats.health <= 0 &&
+            context.character.inventory &&
+            context.character.inventory.includes("Phoenix Plume")
+        ) {
+            setContext((oldContext) => {
+                return {
+                    ...oldContext,
+                    character: {
+                        ...oldContext.character,
+                        inventory: oldContext.character.inventory.filter(
+                            (item) => item !== "Phoenix Plume"
+                        ),
+                        stats: {
+                            ...oldContext.character.stats,
+                            health: oldContext.character.stats.maxHealth,
+                        },
+                    },
+                };
+            });
+            return;
+        }
         if (context.character.stats.health <= 0) {
             stopRef.current.click();
             setContext((oldContext) => {

@@ -9,6 +9,7 @@ import { AppContext } from "../appContext";
 import BattleScreen from "./battleScreen";
 import LevelUpScreen from "./levelUpScreen";
 import LoadingScreen from "./loadingScreen";
+import DialogScreen from "./dialogScreen";
 
 const MapScreen = () => {
     const [context, setContext] = useContext(AppContext);
@@ -16,6 +17,7 @@ const MapScreen = () => {
     const [loadingScreen, setLoadingScreen] = useState([]);
     const [battleScreen, setBattleScreen] = useState([]);
     const [levelUpScreen, setLevelUpScreen] = useState([]);
+    const [dialogScreen, setDialogScreen] = useState([]);
     const mapRef = useRef(null);
     const [tick, setTick] = useState(0);
     const [score, setScore] = useState(context.score ? context.score : 0);
@@ -78,7 +80,6 @@ const MapScreen = () => {
             nextCell = playerParent.previousElementSibling
                 ? playerParent.previousElementSibling.children[playerIndex]
                 : undefined;
-            playerParent.previousElementSibling.children[playerIndex];
         }
         if (direction === "down") {
             nextCell = playerParent.nextElementSibling
@@ -91,12 +92,13 @@ const MapScreen = () => {
         if (direction === "right") {
             nextCell = player.nextElementSibling;
         }
-        if (nextCell && nextCell.classList.contains("exit")) {
+        if (!nextCell) return;
+        if (nextCell.classList.contains("exit")) {
             document.removeEventListener("keydown", handleKeys);
             setLoadingScreen(<LoadingScreen></LoadingScreen>);
             nextMap();
         }
-        if (nextCell && isMob(nextCell)) {
+        if (isMob(nextCell)) {
             document.removeEventListener("keydown", handleKeys);
             const mobClass = nextCell.classList[nextCell.classList.length - 1];
             setBattleScreen(
@@ -110,7 +112,7 @@ const MapScreen = () => {
                 />
             );
         }
-        if (nextCell && isItem(nextCell)) {
+        if (isItem(nextCell)) {
             getItemPrice(context.worldName, nextCell.classList[1]).then(
                 (price) => {
                     setGold((oldGold) => oldGold + price);
@@ -119,7 +121,7 @@ const MapScreen = () => {
                 }
             );
         }
-        if (nextCell && nextCell.classList.contains("well")) {
+        if (nextCell.classList.contains("well")) {
             //heal the player
             setContext((oldContext) => {
                 return {
@@ -135,7 +137,7 @@ const MapScreen = () => {
             });
         }
 
-        if (nextCell && nextCell.classList.contains("dungeon")) {
+        if (nextCell.classList.contains("dungeon")) {
             //put the player in the first floor of the dungeon
             setContext((oldContext) => {
                 return {
@@ -144,11 +146,38 @@ const MapScreen = () => {
                 };
             });
         }
-
-        if (nextCell && nextCell.classList.contains("save")) {
+        if (nextCell.classList.contains("monolith")) {
+            document.removeEventListener("keydown", handleKeys);
+            setDialogScreen(
+                <DialogScreen
+                    type={"monolith"}
+                    handleKeys={handleKeys}
+                    setParent={setDialogScreen}></DialogScreen>
+            );
+        }
+        if (nextCell.classList.contains("temple")) {
+            document.removeEventListener("keydown", handleKeys);
+            setDialogScreen(
+                <DialogScreen
+                    type={"temple"}
+                    setScore={setScore}
+                    handleKeys={handleKeys}
+                    setParent={setDialogScreen}></DialogScreen>
+            );
+        }
+        if (nextCell.classList.contains("merchant")) {
+            document.removeEventListener("keydown", handleKeys);
+            setDialogScreen(
+                <DialogScreen
+                    type={"merchant"}
+                    handleKeys={handleKeys}
+                    setParent={setDialogScreen}></DialogScreen>
+            );
+        }
+        if (nextCell.classList.contains("save")) {
             saveGame();
         }
-        if (nextCell && !nextCell.classList.contains("wall")) {
+        if (!nextCell.classList.contains("wall")) {
             player.classList.remove("player");
             nextCell.classList.add("player");
             setTick((oldTick) => oldTick + 1);
@@ -156,13 +185,19 @@ const MapScreen = () => {
     }
 
     function spotlight(map, player) {
+        const contextCopy = contextRef.current;
         const mapBounds = map.getBoundingClientRect();
         const playerBounds = player.getBoundingClientRect();
         const playerCenter = {
             x: playerBounds.x - mapBounds.x + playerBounds.width / 2,
             y: playerBounds.y - mapBounds.y + playerBounds.height / 2,
         };
-        map.style.clipPath = `circle(calc(75 / 21 * 3lvmin - 2px) at ${playerCenter.x}px ${playerCenter.y}px)`;
+        const circleRadius =
+            contextCopy.character.inventory &&
+            contextCopy.character.inventory.includes("Oil Lamp")
+                ? 5
+                : 3;
+        map.style.clipPath = `circle(calc(75 / 21 * ${circleRadius}lvmin - 2px) at ${playerCenter.x}px ${playerCenter.y}px)`;
     }
 
     const nextMap = useCallback(() => {
@@ -298,7 +333,7 @@ const MapScreen = () => {
         });
 
         if (
-            score >
+            score >=
             context.character.level ** 1.3 * context.character.rarity * 500
         ) {
             setLevelUpScreen(
@@ -399,6 +434,7 @@ const MapScreen = () => {
             {battleScreen}
             {loadingScreen}
             {levelUpScreen}
+            {dialogScreen}
             <p style={{ textAlign: "center" }}>
                 Floor {context.map.floor}: {context.map.name} - Score:{" "}
                 {context.score ? context.score : 0} - Gold:{" "}
