@@ -1,12 +1,15 @@
 import React, { useEffect, useState, useContext } from "react";
 import { AppContext } from "../appContext";
+import LoadingScreen from "./loadingScreen";
 
 const NewGameScreen = () => {
     const [loading, setLoading] = useState(false);
+    const [loadingScreen, setLoadingScreen] = useState(<></>);
     const [context, setContext] = useContext(AppContext);
     const [name, setName] = useState("");
 
     function createWorld(name) {
+        setLoadingScreen(<LoadingScreen></LoadingScreen>);
         setLoading(true);
         fetch(process.env.REACT_APP_MIDDLEWARE_URL + "/generateWorld", {
             method: "GET",
@@ -42,6 +45,7 @@ const NewGameScreen = () => {
                 });
             })
             .catch((error) => {
+                setLoadingScreen(<></>);
                 setLoading(false);
                 console.log(error);
             });
@@ -49,6 +53,7 @@ const NewGameScreen = () => {
 
     return (
         <div className="menu-container">
+            {loadingScreen}
             <p>Name your world</p>
             <input
                 onChange={(e) => setName(e.target.value)}
