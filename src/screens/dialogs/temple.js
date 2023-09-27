@@ -27,33 +27,10 @@ const Temple = ({ setScore }) => {
             setScore((oldScore) => oldScore + goldNeeded * 5);
         }
     };
-
-    const pray = () => {
-        setContext((oldContext) => {
-            return {
-                ...oldContext,
-                score: oldContext.score + 1,
-            };
-        });
-    };
-
-    const showStats = () => {
-        setInnerText(
-            <>
-                <p>You understand yourself slightly better.</p>
-                <p>Attack: {context.character.stats.attack}</p>
-                <p>Defense: {context.character.stats.defense}</p>
-                <p>Luck: {context.character.stats.luck}</p>
-            </>
-        );
-    };
     return (
         <>
             Temple
             {innerText}
-            <button onClick={showStats} className="btn">
-                Pray for awareness
-            </button>
             <button
                 disabled={context.gold < goldNeeded}
                 onClick={donate}

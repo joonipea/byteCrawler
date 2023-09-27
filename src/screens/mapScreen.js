@@ -10,6 +10,7 @@ import BattleScreen from "./battleScreen";
 import LevelUpScreen from "./levelUpScreen";
 import LoadingScreen from "./loadingScreen";
 import DialogScreen from "./dialogScreen";
+import PauseScreen from "./pauseScreen";
 
 const MapScreen = () => {
     const [context, setContext] = useContext(AppContext);
@@ -62,6 +63,13 @@ const MapScreen = () => {
             case "ArrowRight":
                 movePlayer("right");
                 break;
+            case "Escape":
+                document.removeEventListener("keydown", handleKeys);
+                setDialogScreen(
+                    <PauseScreen
+                        handleKeys={handleKeys}
+                        setParent={setDialogScreen}></PauseScreen>
+                );
             default:
                 break;
         }

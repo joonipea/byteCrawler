@@ -263,7 +263,7 @@ const BattleScreen = ({
         const drops = mobData.drops;
         const expMultiplier =
             context.character.inventory &&
-            context.character.inventory.includes("Rabbit's Foot")
+            context.character.inventory.includes("Cracked Wise Glasses")
                 ? 1.5
                 : 1;
         let exp = 0;
