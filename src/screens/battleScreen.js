@@ -345,7 +345,7 @@ const BattleScreen = ({
     useEffect(() => {
         mapMusic.click();
 
-        var url = "./music/FIGHT.wav";
+        var url = "./music/FIGHT_REPRISE.ogg";
 
         audio_context = new AudioContext();
 
