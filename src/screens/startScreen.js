@@ -40,6 +40,13 @@ const StartScreen = () => {
                 className="btn settings-button">
                 Settings
             </button>
+            <button
+                className="btn"
+                onClick={() => {
+                    window.close();
+                }}>
+                Quit
+            </button>
         </div>
     );
 };

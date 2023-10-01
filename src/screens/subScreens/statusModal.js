@@ -47,6 +47,13 @@ const StatusModal = ({ setParent }) => {
                 className="btn">
                 Settings
             </button>
+            <button
+                onClick={() => {
+                    window.location.reload();
+                }}
+                className="btn">
+                Return to Title
+            </button>
         </>
     );
 };
