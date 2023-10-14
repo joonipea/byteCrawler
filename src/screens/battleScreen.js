@@ -8,6 +8,7 @@ const BattleScreen = ({
     setScore,
     handleKeys,
     mapMusic,
+    ghost,
 }) => {
     const [context, setContext] = useContext(AppContext);
     const [mobData, setMobData] = useState({});
@@ -268,7 +269,22 @@ const BattleScreen = ({
     function victory() {
         lockOptions();
         const enemyDiv = document.querySelector(".enemy-battler");
-        const drops = mobData.drops;
+        let drops = [];
+        if (ghost) {
+            console.log(mobData);
+            let ghostRarity = 0;
+            for (let stat of Object.values(mobData.stats)) {
+                ghostRarity += stat;
+            }
+            for (let i = 0; i < ghostRarity; i++) {
+                drops.push({
+                    name: "Ghost Essence",
+                    price: 100,
+                });
+            }
+        } else {
+            drops = mobData.drops;
+        }
         const expMultiplier =
             context.character.inventory &&
             context.character.inventory.includes("Cracked Wise Glasses")
@@ -422,9 +438,35 @@ const BattleScreen = ({
 
         request.send();
     }, []);
+    const colors = {
+        green: "136deg",
+        red: "0deg",
+        blue: "240deg",
+        yellow: "60deg) brightness(3",
+        deadly: "0deg",
+        sad: "240deg",
+        happy: "60deg) brightness(3",
+    };
 
     return (
         <div id="battle-screen">
+            <style>
+                {ghost
+                    ? `
+                .enemy-sprite {
+                    background-image: url("./sprites/ghost.png");
+                }
+                `
+                    : `
+                .enemy-sprite {
+                    background-image: url("./sprites/${
+                        mobName.split(/\s(.*)/s)[1]
+                    }.png");
+                    filter: brightness(0.1) brightness(50%) sepia(100%) saturate(10000%)
+                    hue-rotate(${colors[mobName.split(" ")[0]]});
+                }
+                `}
+            </style>
             <div ref={stopRef}></div>
             <div className="entity-container">
                 <div className="enemy-battler sprite-container">
