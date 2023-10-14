@@ -32,7 +32,9 @@ const StatusModal = ({ setParent }) => {
         <>
             <div className="player-container">
                 <div className="player-display">
-                    <div className="player-name">{context.character.name}</div>
+                    <div className="player-name">
+                        {context.character.name.replace(/_/g, " ")}
+                    </div>
                     <div className="player-sprite"></div>
                 </div>
                 <div className="player-stats">{playerStats}</div>

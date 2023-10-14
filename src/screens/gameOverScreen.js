@@ -139,9 +139,6 @@ const GameOverScreen = () => {
             <button onClick={() => startScreen()} className="btn">
                 Return to title
             </button>
-            <button onClick={() => loadScreen()} className="btn">
-                Continue
-            </button>
             <button onClick={() => townScreen()} className="btn">
                 Return to town
             </button>

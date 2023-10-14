@@ -444,8 +444,8 @@ const MapScreen = () => {
             {levelUpScreen}
             {dialogScreen}
             <p style={{ textAlign: "center" }}>
-                Floor {context.map.floor}: {context.map.name} - Score:{" "}
-                {context.score ? context.score : 0} - Gold:{" "}
+                Floor {context.map.floor}: {context.map.name.replace(/_/g, " ")}{" "}
+                - Score: {context.score ? context.score : 0} - Gold:{" "}
                 {context.gold ? context.gold : 0}
             </p>
             <div ref={mapRef} id="map"></div>

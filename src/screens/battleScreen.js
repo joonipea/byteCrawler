@@ -36,7 +36,7 @@ const BattleScreen = ({
                 setMobData(data[0]);
                 setMobHealth(data[0].stats.health);
                 setMobMaxHealth(data[0].stats.maxHealth);
-                setMobName(data[0].name);
+                setMobName(data[0].name.replace(/_/g, " "));
             });
     }, [mob]);
 
@@ -117,9 +117,12 @@ const BattleScreen = ({
             defender.name === context.character.name ? "white" : "red"
         }">${defender.name}</span>`;
 
-        const message = `${attackerName} attacks ${defenderName} for ${damage} damage.`;
+        const message = `${attackerName.replace(
+            /_/g,
+            " "
+        )} attacks ${defenderName.replace(/_/g, " ")} for ${damage} damage.`;
 
-        const defenceMessage = `${defenderName} defends${
+        const defenceMessage = `${defenderName.replace(/_/g, " ")} defends${
             damage - defender.stats.defense < 0
                 ? ", takes a breath, and restores " +
                   Math.min(
@@ -130,7 +133,10 @@ const BattleScreen = ({
                 : " and takes " + (damage - defender.stats.defense) + " damage."
         }`;
 
-        const evadeMessage = `${defenderName} evades the attack.`;
+        const evadeMessage = `${defenderName.replace(
+            /_/g,
+            " "
+        )} evades the attack.`;
 
         if (attackerState === "attacking") {
             if (defenderState === "attacking" || defenderState === "neutral") {
@@ -162,7 +168,9 @@ const BattleScreen = ({
 
             if (defender.stats.health <= 0) {
                 if (defender.name === context.character.name) {
-                    setAttackerMessage(`${attackerName} has been defeated.`);
+                    setAttackerMessage(
+                        `${attackerName.replace(/_/g, " ")} has been defeated.`
+                    );
                 }
             }
             defenderDamageRef.style.opacity = 1;
@@ -278,7 +286,13 @@ const BattleScreen = ({
         enemyDiv.style.opacity = 0;
         setMobAttack("");
         setPlayerAttack(
-            `${context.character.name} has defeated ${mobName}! ${context.character.name} gains ${exp} experience.`
+            `${context.character.name.replace(
+                /_/g,
+                " "
+            )} has defeated ${mobName}! ${context.character.name.replace(
+                /_/g,
+                " "
+            )} gains ${exp} experience.`
         );
 
         setTimeout(() => {
@@ -308,6 +322,29 @@ const BattleScreen = ({
         }
     }, [mobHealth]);
 
+    // handle death of character
+    function createGhost() {
+        const ghost = context.character.id;
+        const updatedMaps = context.maps.map((map) => {
+            if (map.id === context.map.id) {
+                // map is a string[][]
+                // find a random floor tile to place one ghost
+                let x, y;
+                do {
+                    x = Math.floor(Math.random() * map.map.length);
+                    y = Math.floor(Math.random() * map.map[0].length);
+                } while (map.map[x][y] !== "floor");
+                map.map[x][y] = ghost;
+            }
+            return map;
+        });
+        setContext((oldContext) => {
+            return {
+                ...oldContext,
+                maps: updatedMaps,
+            };
+        });
+    }
     useEffect(() => {
         if (
             context.character.stats.health <= 0 &&
@@ -332,6 +369,7 @@ const BattleScreen = ({
             return;
         }
         if (context.character.stats.health <= 0) {
+            createGhost();
             stopRef.current.click();
             setContext((oldContext) => {
                 return {
@@ -400,7 +438,7 @@ const BattleScreen = ({
                 <div className="player-battler sprite-container">
                     <div ref={playerDamageRef} className="damage-message"></div>
                     <div className="player-battler-name">
-                        {context.character.name}
+                        {context.character.name.replace(/_/g, " ")}
                     </div>
                     <div className="player-battler-hp">
                         {context.character.stats.health} /{" "}
