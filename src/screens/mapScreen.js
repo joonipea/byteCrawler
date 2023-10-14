@@ -83,6 +83,8 @@ const MapScreen = () => {
             Array.from(cell.classList).some((c) => c.startsWith("mobs"));
         const isItem = (cell) =>
             Array.from(cell.classList).some((c) => c.startsWith("items"));
+        const isTomb = (cell) =>
+            Array.from(cell.classList).some((c) => c.startsWith("chars"));
         let nextCell;
         if (direction === "up") {
             nextCell = playerParent.previousElementSibling
@@ -105,6 +107,29 @@ const MapScreen = () => {
             document.removeEventListener("keydown", handleKeys);
             setLoadingScreen(<LoadingScreen></LoadingScreen>);
             nextMap();
+        }
+        if (isTomb(nextCell)) {
+            document.removeEventListener("keydown", handleKeys);
+            const charClass = nextCell.classList[1];
+            setDialogScreen(
+                <DialogScreen
+                    type={"ghost"}
+                    setParent={setDialogScreen}
+                    handleKeys={handleKeys}
+                    setBattleScreen={() =>
+                        setBattleScreen(
+                            <BattleScreen
+                                setParent={setBattleScreen}
+                                mob={charClass}
+                                ghost={true}
+                                cell={nextCell}
+                                setScore={setScore}
+                                handleKeys={handleKeys}
+                                mapMusic={stopRef.current}
+                            />
+                        )
+                    }></DialogScreen>
+            );
         }
         if (isMob(nextCell)) {
             document.removeEventListener("keydown", handleKeys);

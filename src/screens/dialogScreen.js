@@ -2,8 +2,15 @@ import React, { useEffect, useState } from "react";
 import Monolith from "./dialogs/monolith";
 import Temple from "./dialogs/temple";
 import Merchant from "./dialogs/merchant";
+import Ghost from "./dialogs/ghost";
 
-const DialogScreen = ({ setParent, setScore, type, handleKeys }) => {
+const DialogScreen = ({
+    setParent,
+    setScore,
+    type,
+    handleKeys,
+    setBattleScreen,
+}) => {
     const [dialogText, setDialogText] = useState("");
     useEffect(() => {
         switch (type) {
@@ -16,6 +23,13 @@ const DialogScreen = ({ setParent, setScore, type, handleKeys }) => {
             case "merchant":
                 setDialogText(<Merchant />);
                 break;
+            case "ghost":
+                setDialogText(
+                    <Ghost
+                        setBattleScreen={setBattleScreen}
+                        setParent={setParent}
+                    />
+                );
             default:
                 break;
         }
