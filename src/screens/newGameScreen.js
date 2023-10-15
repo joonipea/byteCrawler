@@ -56,11 +56,19 @@ const NewGameScreen = () => {
             {loadingScreen}
             <p>Name your world</p>
             <input
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => {
+                    let value = e.target.value;
+
+                    value = value.replace(/[^A-Za-z]/gi, "");
+                    setName(value);
+                }}
                 value={name}
                 type="text"
                 className="input"
                 minLength={3}
+                onKeyDown={(e) => {
+                    return /[a-z]/i.test(e.key);
+                }}
             />
             <button
                 disabled={loading}
