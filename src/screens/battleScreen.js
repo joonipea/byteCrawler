@@ -7,6 +7,7 @@ const BattleScreen = ({
     cell,
     setScore,
     handleKeys,
+    bindControls,
     mapMusic,
     ghost,
 }) => {
@@ -316,7 +317,7 @@ const BattleScreen = ({
             cell.classList.add("floor");
             stopRef.current.click();
             mapMusic.click();
-            document.addEventListener("keydown", handleKeys);
+            bindControls();
             setParent([]);
         }, 2000);
     }
@@ -517,7 +518,7 @@ const BattleScreen = ({
                     onClick={() => {
                         const runChance = Math.random();
                         if (runChance > 0.5) {
-                            document.addEventListener("keydown", handleKeys);
+                            bindControls();
                             stopRef.current.click();
                             mapMusic.click();
                             setParent([]);

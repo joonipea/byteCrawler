@@ -45,9 +45,8 @@ const MapScreen = () => {
 
             container.appendChild(rowDiv);
         }
-        document.addEventListener("keydown", handleKeys);
+        bindControls();
     }
-
     //bind arrowkeys to movement
     const handleKeys = useCallback((e) => {
         switch (e.key) {
@@ -64,16 +63,45 @@ const MapScreen = () => {
                 movePlayer("right");
                 break;
             case "Escape":
-                document.removeEventListener("keydown", handleKeys);
+                unBindControls();
                 setDialogScreen(
                     <PauseScreen
-                        handleKeys={handleKeys}
+                        bindControls={bindControls}
                         setParent={setDialogScreen}></PauseScreen>
                 );
             default:
                 break;
         }
     }, []);
+
+    let touchstartX = 0;
+    let touchendX = 0;
+    let touchstartY = 0;
+    let touchendY = 0;
+    const handleTouchStart = useCallback((e) => {
+        touchstartX = e.changedTouches[0].screenX;
+        touchstartY = e.changedTouches[0].screenY;
+    }, []);
+    const handleTouchEnd = useCallback((e) => {
+        touchendX = e.changedTouches[0].screenX;
+        touchendY = e.changedTouches[0].screenY;
+        checkDirection();
+    }, []);
+
+    function checkDirection() {
+        if (touchendX < touchstartX) {
+            movePlayer("left");
+        }
+        if (touchendX > touchstartX) {
+            movePlayer("right");
+        }
+        if (touchendY < touchstartY) {
+            movePlayer("up");
+        }
+        if (touchendY > touchstartY) {
+            movePlayer("down");
+        }
+    }
 
     function movePlayer(direction) {
         const player = document.querySelector(".player");
@@ -104,18 +132,18 @@ const MapScreen = () => {
         }
         if (!nextCell) return;
         if (nextCell.classList.contains("exit")) {
-            document.removeEventListener("keydown", handleKeys);
+            unBindControls();
             setLoadingScreen(<LoadingScreen></LoadingScreen>);
             nextMap();
         }
         if (isTomb(nextCell)) {
-            document.removeEventListener("keydown", handleKeys);
+            unBindControls();
             const charClass = nextCell.classList[1];
             setDialogScreen(
                 <DialogScreen
                     type={"ghost"}
                     setParent={setDialogScreen}
-                    handleKeys={handleKeys}
+                    bindControls={bindControls}
                     setBattleScreen={() =>
                         setBattleScreen(
                             <BattleScreen
@@ -124,7 +152,7 @@ const MapScreen = () => {
                                 ghost={true}
                                 cell={nextCell}
                                 setScore={setScore}
-                                handleKeys={handleKeys}
+                                bindControls={bindControls}
                                 mapMusic={stopRef.current}
                             />
                         )
@@ -132,7 +160,7 @@ const MapScreen = () => {
             );
         }
         if (isMob(nextCell)) {
-            document.removeEventListener("keydown", handleKeys);
+            unBindControls();
             const mobClass = nextCell.classList[nextCell.classList.length - 1];
             setBattleScreen(
                 <BattleScreen
@@ -140,7 +168,7 @@ const MapScreen = () => {
                     mob={mobClass}
                     cell={nextCell}
                     setScore={setScore}
-                    handleKeys={handleKeys}
+                    bindControls={bindControls}
                     mapMusic={stopRef.current}
                 />
             );
@@ -180,30 +208,30 @@ const MapScreen = () => {
             });
         }
         if (nextCell.classList.contains("monolith")) {
-            document.removeEventListener("keydown", handleKeys);
+            unBindControls();
             setDialogScreen(
                 <DialogScreen
                     type={"monolith"}
-                    handleKeys={handleKeys}
+                    bindControls={bindControls}
                     setParent={setDialogScreen}></DialogScreen>
             );
         }
         if (nextCell.classList.contains("temple")) {
-            document.removeEventListener("keydown", handleKeys);
+            unBindControls();
             setDialogScreen(
                 <DialogScreen
                     type={"temple"}
                     setScore={setScore}
-                    handleKeys={handleKeys}
+                    bindControls={bindControls}
                     setParent={setDialogScreen}></DialogScreen>
             );
         }
         if (nextCell.classList.contains("merchant")) {
-            document.removeEventListener("keydown", handleKeys);
+            unBindControls();
             setDialogScreen(
                 <DialogScreen
                     type={"merchant"}
-                    handleKeys={handleKeys}
+                    bindControls={bindControls}
                     setParent={setDialogScreen}></DialogScreen>
             );
         }
@@ -215,6 +243,17 @@ const MapScreen = () => {
             nextCell.classList.add("player");
             setTick((oldTick) => oldTick + 1);
         }
+    }
+    function bindControls() {
+        document.addEventListener("keydown", handleKeys);
+        document.addEventListener("touchstart", handleTouchStart);
+        document.addEventListener("touchend", handleTouchEnd);
+    }
+
+    function unBindControls() {
+        document.removeEventListener("keydown", handleKeys);
+        document.removeEventListener("touchstart", handleTouchStart);
+        document.removeEventListener("touchend", handleTouchEnd);
     }
 
     function spotlight(map, player) {
@@ -241,7 +280,7 @@ const MapScreen = () => {
                 .then((newFloor) => {
                     setNextFloor(newFloor[0]);
                     setLoadingScreen([]);
-                    document.addEventListener("keydown", handleKeys);
+                    bindControls();
                 });
         } else {
             setContext((oldContext) => {
@@ -251,7 +290,7 @@ const MapScreen = () => {
                 };
             });
             setLoadingScreen([]);
-            document.addEventListener("keydown", handleKeys);
+            bindControls();
         }
     }, []);
 
@@ -390,7 +429,7 @@ const MapScreen = () => {
         if (!context.map.map) return;
 
         mapRef.current.innerHTML = "";
-        document.removeEventListener("keydown", handleKeys);
+        unBindControls();
         createMap(context.map.map);
         spotlight(
             document.getElementById("map"),

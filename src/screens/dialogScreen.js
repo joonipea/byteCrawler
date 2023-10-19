@@ -8,7 +8,7 @@ const DialogScreen = ({
     setParent,
     setScore,
     type,
-    handleKeys,
+    bindControls,
     setBattleScreen,
 }) => {
     const [dialogText, setDialogText] = useState("");
@@ -40,7 +40,7 @@ const DialogScreen = ({
             <button
                 className="btn"
                 onClick={() => {
-                    document.addEventListener("keydown", handleKeys);
+                    bindControls();
                     setParent([]);
                 }}>
                 Leave

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import StatusModal from "./subScreens/statusModal";
 
-const PauseScreen = ({ setParent, handleKeys }) => {
+const PauseScreen = ({ setParent, bindControls }) => {
     const [pageContent, setPageContent] = useState(<></>);
 
     useEffect(() => {
@@ -17,7 +17,7 @@ const PauseScreen = ({ setParent, handleKeys }) => {
                     className="btn"
                     onClick={() => {
                         setParent([]);
-                        document.addEventListener("keydown", handleKeys);
+                        bindControls();
                     }}>
                     X
                 </button>
