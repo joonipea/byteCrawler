@@ -89,17 +89,22 @@ const MapScreen = () => {
     }, []);
 
     function checkDirection() {
-        if (touchendX < touchstartX) {
-            movePlayer("left");
-        }
-        if (touchendX > touchstartX) {
-            movePlayer("right");
-        }
-        if (touchendY < touchstartY) {
-            movePlayer("up");
-        }
-        if (touchendY > touchstartY) {
-            movePlayer("down");
+        let xDiff = touchendX - touchstartX;
+        let yDiff = touchendY - touchstartY;
+        if (Math.abs(xDiff) > Math.abs(yDiff)) {
+            if (touchendX < touchstartX) {
+                movePlayer("left");
+            }
+            if (touchendX > touchstartX) {
+                movePlayer("right");
+            }
+        } else {
+            if (touchendY < touchstartY) {
+                movePlayer("up");
+            }
+            if (touchendY > touchstartY) {
+                movePlayer("down");
+            }
         }
     }
 
