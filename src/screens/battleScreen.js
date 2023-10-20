@@ -399,8 +399,13 @@ const BattleScreen = ({
 
     useEffect(() => {
         mapMusic.click();
-
-        var url = "./music/FIGHT_REPRISE.ogg";
+        const audio = new Audio();
+        let url;
+        if (audio.canPlayType("audio/ogg; codecs=vorbis") === "probably") {
+            url = "./music/FIGHT_REPRISE.ogg";
+        } else {
+            url = "./music/FIGHT_REPRISE.wav";
+        }
 
         audio_context = new AudioContext();
 
