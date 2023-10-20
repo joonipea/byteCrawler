@@ -179,13 +179,29 @@ const MapScreen = () => {
             );
         }
         if (isItem(nextCell)) {
-            getItemPrice(context.worldName, nextCell.classList[1]).then(
-                (price) => {
-                    setGold((oldGold) => oldGold + price);
-                    nextCell.classList.remove(nextCell.classList[1]);
-                    nextCell.classList.add("floor");
-                }
-            );
+            const iName = nextCell.classList[1];
+            if (context.codex[iName]) {
+                setGold((oldGold) => oldGold + context.codex[iName].price);
+                nextCell.classList.remove(nextCell.classList[1]);
+                nextCell.classList.add("floor");
+            } else {
+                getItemPrice(context.worldName, nextCell.classList[1]).then(
+                    (item) => {
+                        setContext((oldContext) => {
+                            return {
+                                ...oldContext,
+                                codex: {
+                                    ...oldContext.codex,
+                                    [item.id]: item,
+                                },
+                            };
+                        });
+                        setGold((oldGold) => oldGold + item.price);
+                        nextCell.classList.remove(nextCell.classList[1]);
+                        nextCell.classList.add("floor");
+                    }
+                );
+            }
         }
         if (nextCell.classList.contains("well")) {
             //heal the player
@@ -524,14 +540,14 @@ const MapScreen = () => {
 
 export default MapScreen;
 
-function getItemPrice(name, item) {
-    return fetch(process.env.REACT_APP_MIDDLEWARE_URL + "/get", {
+async function getItemPrice(name, item) {
+    const res = await fetch(process.env.REACT_APP_MIDDLEWARE_URL + "/get", {
         method: "GET",
         headers: {
             record: item,
             user: name,
         },
-    })
-        .then((res) => res.json())
-        .then((res) => res[0].price);
+    });
+    const res_1 = await res.json();
+    return res_1[0];
 }

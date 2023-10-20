@@ -33,6 +33,8 @@ const NewGameScreen = () => {
                                     map: maps[0],
                                     character: chars[charIndex],
                                     worldName: name,
+                                    bestiary: {},
+                                    codex: {},
                                 };
                                 setContext(newContext);
                                 localStorage.setItem(

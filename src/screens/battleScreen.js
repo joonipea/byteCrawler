@@ -26,6 +26,15 @@ const BattleScreen = ({
     var audio_context;
 
     useEffect(() => {
+        const mName = mob.split(":")[1];
+        if (context.bestiary[mName]) {
+            setMobData(context.bestiary[mName]);
+            setMobHealth(context.bestiary[mName].stats.health);
+            setMobMaxHealth(context.bestiary[mName].stats.maxHealth);
+            setMobName(context.bestiary[mName].name.replace(/_/g, " "));
+            console.log("cached");
+            return;
+        }
         fetch(process.env.REACT_APP_MIDDLEWARE_URL + "/get", {
             method: "GET",
             headers: {
@@ -35,6 +44,15 @@ const BattleScreen = ({
         })
             .then((res) => res.json())
             .then((data) => {
+                setContext((oldContext) => {
+                    return {
+                        ...oldContext,
+                        bestiary: {
+                            ...oldContext.bestiary,
+                            [data[0].name]: data[0],
+                        },
+                    };
+                });
                 setMobData(data[0]);
                 setMobHealth(data[0].stats.health);
                 setMobMaxHealth(data[0].stats.maxHealth);
