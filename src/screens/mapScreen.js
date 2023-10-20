@@ -290,7 +290,12 @@ const MapScreen = () => {
             contextCopy.character.inventory.includes("Oil Lamp")
                 ? 5
                 : 3;
-        map.style.clipPath = `circle(calc(75 / 21 * ${circleRadius}lvmin - 2px) at ${playerCenter.x}px ${playerCenter.y}px)`;
+        map.style.clipPath = `circle(calc(75 / 21 * ${circleRadius}lvmin - 2px) at ${
+            playerCenter.x / 1.5
+        }px ${playerCenter.y / 1.5}px)`;
+        map.style.transformOrigin = `${playerCenter.x / 1.5}px ${
+            playerCenter.y / 1.5
+        }px`;
     }
 
     const nextMap = useCallback(() => {

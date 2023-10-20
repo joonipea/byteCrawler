@@ -77,8 +77,11 @@ input {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: calc(100% - 28px);
+    height: calc(100%);
     transition: clip-path 0.2s ease-in-out;
+    transform: scale(1.5);
+    margin-top: 36px;
+    padding-bottom: 36px;
 }
 
 .row {
