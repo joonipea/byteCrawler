@@ -166,7 +166,10 @@ const MapScreen = () => {
         }
         if (isMob(nextCell)) {
             unBindControls();
-            const mobClass = nextCell.classList[nextCell.classList.length - 1];
+            const mobs = Array.from(nextCell.classList).filter((c) =>
+                c.startsWith("mobs")
+            );
+            const mobClass = mobs[0];
             setBattleScreen(
                 <BattleScreen
                     setParent={setBattleScreen}
