@@ -8,6 +8,7 @@ import MapScreen from "./screens/mapScreen";
 import NewGameScreen from "./screens/newGameScreen";
 import GameOverScreen from "./screens/gameOverScreen";
 import SettingsScreen from "./screens/settingsScreen";
+import CreditsScreen from "./screens/creditsScreen";
 
 const App = () => {
     const [context, setContext] = useContext(AppContext);
@@ -27,6 +28,7 @@ const App = () => {
             {context.screen === "map" && <MapScreen></MapScreen>}
             {context.screen === "gameover" && <GameOverScreen></GameOverScreen>}
             {context.screen === "settings" && <SettingsScreen></SettingsScreen>}
+            {context.screen === "credits" && <CreditsScreen></CreditsScreen>}
         </>
     );
 };

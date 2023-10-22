@@ -21,6 +21,10 @@ p {
     font-family: var(--fonts);
 }
 
+a {
+    color: var(--primary-color);
+}
+
 input {
     font-size: 18px;
     font-family: var(--fonts);
@@ -493,6 +497,51 @@ div[class*=" chars"]::after {
     align-items: center;
     width: 100%;
     gap: 5%;
+}
+
+.credits-container {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    flex-wrap: wrap;
+    text-align: center;
+    gap: 64px;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 170%);
+    bottom: 100%;
+    animation: creditScroller 30s linear infinite;
+}
+
+.credit-holder {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+}
+.credit-title {
+    font-size: 36px;
+}
+
+.creditor {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+}
+.creditor-name {
+    font-size: 24px;
+}
+
+@keyframes creditScroller {
+    0% {
+        transform: translate(-50%, 170%);
+    }
+    100% {
+        transform: translate(-50%, 0%);
+    }
 }
 /*
 credit to alec lownes for the crt effect

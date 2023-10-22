@@ -41,6 +41,13 @@ const StartScreen = () => {
                 Settings
             </button>
             <button
+                onClick={() => {
+                    setContext({ ...context, screen: "credits" });
+                }}
+                className="btn credits-button">
+                Credits
+            </button>
+            <button
                 className="btn"
                 onClick={() => {
                     window.close();
