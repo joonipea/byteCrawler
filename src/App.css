@@ -311,7 +311,6 @@ div[class*=" chars"]::after {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 15%;
     transition: clip-path 0.2s ease-in-out;
     position: absolute;
     background-color: var(--background-color);
@@ -419,6 +418,38 @@ div[class*=" chars"]::after {
         transform: translate(0, 0);
         opacity: 0 !important;
     }
+}
+
+.hand {
+    padding-top: 3%;
+    flex-direction: row;
+    display: flex;
+    justify-content: center;
+    --gap: -15px;
+    align-items: flex-end;
+    width: 100%;
+}
+
+.attack-card {
+    display: flex;
+    flex-direction: column;
+    height: 30vh;
+    justify-content: space-between;
+    background-color: var(--background-color);
+    border: 2px solid var(--primary-color);
+    padding: 5px;
+    text-align: center;
+    aspect-ratio: 2/3;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    margin: 10px var(--gap);
+}
+
+.attack-card:hover {
+    background-color: var(--primary-color);
+    color: var(--background-color);
+    transform: translateY(-10%) !important;
+    z-index: 51;
 }
 
 .dialog-screen {

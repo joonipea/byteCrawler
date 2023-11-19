@@ -1,0 +1,67 @@
+{
+    "fireball": {
+        "name": "Fireball",
+        "type": "spell",
+        "target": "enemy",
+        "cost": 4,
+        "stats": [
+            ["luck", 0.75],
+            ["attack", 0.5]
+        ],
+        "description": "Sling a fireball"
+    },
+    "lightning": {
+        "name": "Lightning",
+        "type": "spell",
+        "target": "enemy",
+        "cost": 6,
+        "stats": [
+            ["luck", 1],
+            ["attack", 0.75]
+        ],
+        "description": "Strike with lightning"
+    },
+    "heal": {
+        "name": "Heal",
+        "type": "spell",
+        "target": "self",
+        "stats": [
+            ["luck", 1],
+            ["defense", 0.75]
+        ],
+        "cost": 3,
+        "description": "Heal your wounds"
+    },
+    "stab": {
+        "name": "Stab",
+        "type": "weapon",
+        "target": "enemy",
+        "stats": [["attack", 1.25]],
+        "cost": 2,
+        "description": "Stab with a sword"
+    },
+    "slash": {
+        "name": "Slash",
+        "type": "weapon",
+        "target": "enemy",
+        "stats": [["attack", 1.5]],
+        "cost": 4,
+        "description": "Slash with a sword"
+    },
+    "cleave": {
+        "name": "Cleave",
+        "type": "weapon",
+        "target": "enemy",
+        "stats": [["attack", 2]],
+        "cost": 6,
+        "description": "Cleave with a sword"
+    },
+    "stone": {
+        "name": "Stone",
+        "type": "weapon",
+        "target": "enemy",
+        "cost": 0,
+        "stats": [["attack", 0.5]],
+        "description": "Throw a stone"
+    }
+}

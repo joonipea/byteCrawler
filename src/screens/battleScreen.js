@@ -1,5 +1,12 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
+import React, {
+    useContext,
+    useState,
+    useEffect,
+    useRef,
+    useCallback,
+} from "react";
 import { AppContext } from "../appContext";
+import Hand from "./dialogs/hand";
 
 const BattleScreen = ({
     mob,
@@ -16,13 +23,16 @@ const BattleScreen = ({
     const [mobHealth, setMobHealth] = useState(0);
     const [mobMaxHealth, setMobMaxHealth] = useState(0);
     const [mobName, setMobName] = useState("");
-    const [playerState, setPlayerState] = useState("neutral");
-    const [enemyState, setEnemyState] = useState("attacking");
+    const [turn, setTurn] = useState(0); // 0 = player, 1 = mob
     const [mobAttack, setMobAttack] = useState("");
     const [playerAttack, setPlayerAttack] = useState("");
     const stopRef = useRef();
+    const contextRef = useRef();
     const playerDamageRef = useRef();
     const mobDamageRef = useRef();
+    const mobDataRef = useRef();
+    contextRef.current = context;
+    mobDataRef.current = mobData;
     var audio_context;
 
     useEffect(() => {
@@ -60,29 +70,22 @@ const BattleScreen = ({
             });
     }, [mob]);
 
-    function battleOrder() {
-        const enemyRoll =
-            Math.floor(Math.random() * 20) +
-            Math.floor(Math.random() * mobData.stats.luck);
-        const playerRoll =
-            Math.floor(Math.random() * 20) +
-            Math.floor(Math.random() * context.character.stats.luck);
-        if (enemyRoll > playerRoll) {
-            return "enemy";
-        }
-        return "player";
-    }
-
     function setPlayerHealth(damage) {
         let newHealth;
+
         if (damage < 0) {
             newHealth = Math.min(
-                context.character.stats.health - damage,
-                context.character.stats.maxHealth
+                contextRef.current.character.stats.health - damage,
+                contextRef.current.character.stats.maxHealth
             );
         } else {
-            newHealth = Math.max(context.character.stats.health - damage, 0);
+            newHealth = Math.max(
+                contextRef.current.character.stats.health - damage,
+                0
+            );
         }
+        console.log(contextRef.current.character.stats.health);
+        console.log(newHealth);
         setContext((oldContext) => {
             return {
                 ...oldContext,
@@ -95,10 +98,6 @@ const BattleScreen = ({
                 },
             };
         });
-    }
-
-    function damageMob(damage) {
-        setMobHealth((oldHealth) => oldHealth - damage);
     }
 
     function calcDamage(luck, attack) {
@@ -114,179 +113,80 @@ const BattleScreen = ({
         }
     }
 
-    // battle logic
-    function battleTurn(
-        attacker,
-        attackerState,
-        setAttackerMessage,
-        defender,
-        defenderState,
-        setDefenderHealth,
-        defenderDamageRef
-    ) {
-        const hitChance = Math.floor(Math.random() * 20) + 1;
-        const evadeChance =
-            Math.floor(Math.random() * 20) + 1 + defender.stats.luck;
-        const damage = calcDamage(attacker.stats.luck, attacker.stats.attack);
-
-        const attackerName = `<span style="color: ${
-            attacker.name === context.character.name ? "white" : "red"
-        }">${attacker.name}</span>`;
-
-        const defenderName = `<span style="color: ${
-            defender.name === context.character.name ? "white" : "red"
-        }">${defender.name}</span>`;
-
-        const message = `${attackerName.replace(
-            /_/g,
-            " "
-        )} attacks ${defenderName.replace(/_/g, " ")} for ${damage} damage.`;
-
-        const defenceMessage = `${defenderName.replace(/_/g, " ")} defends${
-            damage - defender.stats.defense < 0
-                ? ", takes a breath, and restores " +
-                  Math.min(
-                      Math.abs(damage - defender.stats.defense),
-                      defender.stats.maxHealth - defender.stats.health
-                  ) +
-                  " health."
-                : " and takes " + (damage - defender.stats.defense) + " damage."
-        }`;
-
-        const evadeMessage = `${defenderName.replace(
-            /_/g,
-            " "
-        )} evades the attack.`;
-
-        if (attackerState === "attacking") {
-            if (defenderState === "attacking" || defenderState === "neutral") {
-                setDefenderHealth(damage);
-                setAttackerMessage(message);
-                defenderDamageRef.innerText = `-${damage}`;
-                defenderDamageRef.style.color = "red";
-            } else if (defenderState === "evading") {
-                if (evadeChance > hitChance) {
-                    setDefenderHealth(damage);
-                    setAttackerMessage(message);
-                    defenderDamageRef.innerText = `-${damage}`;
-                    defenderDamageRef.style.color = "red";
-                } else {
-                    setAttackerMessage(evadeMessage);
-                    defenderDamageRef.innerText = "Miss";
-                    defenderDamageRef.style.color = "white";
-                }
-            } else if (defenderState === "defending") {
-                setDefenderHealth(damage - defender.stats.defense);
-                setAttackerMessage(defenceMessage);
-                defenderDamageRef.innerText =
-                    damage - defender.stats.defense > 0
-                        ? `-${damage - defender.stats.defense}`
-                        : `+${Math.abs(damage - defender.stats.defense)}`;
-                defenderDamageRef.style.color =
-                    damage - defender.stats.defense > 0 ? "red" : "#7bff7b";
-            }
-
-            if (defender.stats.health <= 0) {
-                if (defender.name === context.character.name) {
-                    setAttackerMessage(
-                        `${attackerName.replace(/_/g, " ")} has been defeated.`
-                    );
-                }
-            }
-            defenderDamageRef.style.opacity = 1;
-            defenderDamageRef.style.animation = "floatAway 1s ease-in-out 1";
-            setTimeout(() => {
-                defenderDamageRef.style.animation = "";
-                defenderDamageRef.style.opacity = 0;
-            }, 1000);
+    function handleCards(card) {
+        console.log(card);
+        if (turn === 1) return;
+        switch (card.target) {
+            case "enemy":
+                attackCard(card);
+                break;
+            case "self":
+                healCard(card);
+                break;
+            default:
+                break;
         }
+    }
+
+    function attackCard(card) {
+        const damage = card.damage;
+        setMobHealth((oldHealth) => oldHealth - damage);
+
+        setPlayerAttack(
+            `${context.character.name.replace(
+                /_/g,
+                " "
+            )} attacks ${mobName} for ${damage} damage.`
+        );
+        damageText(mobDamageRef, damage, "red");
+        setTurn(1);
+    }
+
+    function healCard(card) {
+        const damage = card.damage * -1;
+        console.log(damage);
+        damageText(playerDamageRef, damage, "green");
+        setPlayerHealth(damage);
+        setTurn(1);
+    }
+    function attackPlayer(attacker) {
+        if (!attacker.stats) return;
+        const damage = calcDamage(attacker.stats.luck, attacker.stats.attack);
+        setPlayerHealth(damage);
+        damageText(playerDamageRef, damage, "red");
+        setMobAttack(
+            `${attacker.name.replace(
+                /_/g,
+                " "
+            )} attacks ${context.character.name.replace(
+                /_/g,
+                " "
+            )} for ${damage} damage.`
+        );
     }
 
     useEffect(() => {
-        if (!mobData.stats || playerState === "neutral") {
-            return;
+        if (mobHealth <= 0) return;
+        if (turn === 1) {
+            setTimeout(() => {
+                setTurn(0);
+                attackPlayer(mobDataRef.current);
+            }, 1000);
         }
-        lockOptions();
-        setPlayerAttack("");
-        setMobAttack("");
-        setEnemyState("attacking");
-        let attacker,
-            attackerState,
-            setAttackerHealth,
-            setAttackerState,
-            setAttackerMessage,
-            attackerDamageRef,
-            defender,
-            defenderState,
-            setDefenderHealth,
-            setDefenderState,
-            setDefenderMessage,
-            defenderDamageRef;
-        if (battleOrder() === "enemy") {
-            attacker = mobData;
-            attackerState = enemyState;
-            setAttackerHealth = damageMob;
-            setAttackerState = setEnemyState;
-            setAttackerMessage = setMobAttack;
-            attackerDamageRef = mobDamageRef.current;
-            defender = context.character;
-            defenderState = playerState;
-            setDefenderHealth = setPlayerHealth;
-            setDefenderState = setPlayerState;
-            setDefenderMessage = setPlayerAttack;
-            defenderDamageRef = playerDamageRef.current;
-        } else {
-            attacker = context.character;
-            attackerState = playerState;
-            setAttackerHealth = setPlayerHealth;
-            setAttackerState = setPlayerState;
-            setAttackerMessage = setPlayerAttack;
-            attackerDamageRef = playerDamageRef.current;
-            defender = mobData;
-            defenderState = enemyState;
-            setDefenderHealth = damageMob;
-            setDefenderState = setEnemyState;
-            setDefenderMessage = setMobAttack;
-            defenderDamageRef = mobDamageRef.current;
-        }
-        battleTurn(
-            attacker,
-            attackerState,
-            setAttackerMessage,
-            defender,
-            defenderState,
-            setDefenderHealth,
-            defenderDamageRef
-        );
-        battleTurn(
-            defender,
-            defenderState,
-            setDefenderMessage,
-            attacker,
-            attackerState,
-            setAttackerHealth,
-            attackerDamageRef
-        );
+    }, [turn]);
+
+    function damageText(ref, damage, color) {
+        ref.current.innerText = damage * -1;
+        ref.current.style.opacity = 1;
+        ref.current.style.color = color;
+        ref.current.style.animation = "floatAway 1s ease-in-out 1";
         setTimeout(() => {
-            setPlayerState("neutral");
-            unlockOptions();
+            ref.current.style.opacity = 0;
+            ref.current.style.animation = "";
         }, 1000);
-    }, [playerState]);
-
-    function lockOptions() {
-        document.querySelectorAll(".btn").forEach((btn) => {
-            btn.disabled = true;
-        });
-    }
-
-    function unlockOptions() {
-        document.querySelectorAll(".btn").forEach((btn) => {
-            btn.disabled = false;
-        });
     }
 
     function victory() {
-        lockOptions();
         const enemyDiv = document.querySelector(".enemy-battler");
         let drops = [];
         if (ghost) {
@@ -521,38 +421,7 @@ const BattleScreen = ({
                     dangerouslySetInnerHTML={{ __html: playerAttack }}
                     className="battle-log-entry"></div>
             </div>
-            <div className="battle-options">
-                <button
-                    onClick={() => setPlayerState("attacking")}
-                    className="btn">
-                    Attack
-                </button>
-                <button
-                    onClick={() => setPlayerState("defending")}
-                    className="btn">
-                    Defend
-                </button>
-                <button
-                    onClick={() => setPlayerState("evading")}
-                    className="btn">
-                    Evade
-                </button>
-                <button
-                    onClick={() => {
-                        const runChance = Math.random();
-                        if (runChance > 0.5) {
-                            bindControls();
-                            stopRef.current.click();
-                            mapMusic.click();
-                            setParent([]);
-                        } else {
-                            setPlayerState("evading");
-                        }
-                    }}
-                    className="btn">
-                    Run
-                </button>
-            </div>
+            <Hand handleCards={handleCards} stats={context.character.stats} />
         </div>
     );
 };
