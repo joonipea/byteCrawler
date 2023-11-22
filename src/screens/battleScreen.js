@@ -240,21 +240,18 @@ const BattleScreen = ({
     function victory() {
         const enemyDiv = document.querySelector(".enemy-battler");
         let drops = [];
-        if (ghost) {
-            console.log(mobData);
-            let ghostRarity = 0;
-            for (let stat of Object.values(mobData.stats)) {
-                ghostRarity += stat;
-            }
-            for (let i = 0; i < ghostRarity; i++) {
-                drops.push({
-                    name: "Ghost Essence",
-                    price: 100,
-                });
-            }
-        } else {
-            drops = mobData.drops;
+
+        let ghostRarity = 0;
+        for (let stat of Object.values(mobData.stats)) {
+            ghostRarity += stat;
         }
+        for (let i = 0; i < ghostRarity; i++) {
+            drops.push({
+                name: "Ghost Essence",
+                price: 10,
+            });
+        }
+
         const expMultiplier =
             context.character.inventory &&
             context.character.inventory.includes("Cracked Wise Glasses")
