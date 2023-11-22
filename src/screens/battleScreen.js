@@ -31,6 +31,7 @@ const BattleScreen = ({
     const playerDamageRef = useRef();
     const mobDamageRef = useRef();
     const mobDataRef = useRef();
+    const handRef = useRef();
     contextRef.current = context;
     mobDataRef.current = mobData;
     var audio_context;
@@ -115,13 +116,12 @@ const BattleScreen = ({
 
     function handleCards(card) {
         console.log(card);
-        if (turn === 1) return;
         switch (card.target) {
             case "enemy":
                 attackCard(card);
                 break;
             case "self":
-                healCard(card);
+                selfCard(card);
                 break;
             default:
                 break;
@@ -142,13 +142,62 @@ const BattleScreen = ({
         setTurn(1);
     }
 
+    function selfCard(card) {
+        switch (card.type) {
+            case "spell":
+                healCard(card);
+                break;
+            case "item":
+                itemCard(card);
+                break;
+            default:
+                break;
+        }
+    }
+
     function healCard(card) {
         const damage = card.damage * -1;
-        console.log(damage);
-        damageText(playerDamageRef, damage, "green");
+        setPlayerAttack(
+            `${context.character.name.replace(/_/g, " ")} heals for ${
+                damage * -1
+            } health.`
+        );
+
+        damageText(playerDamageRef, damage, "#7bff7b");
         setPlayerHealth(damage);
         setTurn(1);
     }
+
+    function itemCard(card) {
+        const damage = card.damage;
+        const cards = card.cards;
+        for (let i = 0; i < damage; i++) {
+            for (let newCard of cards) {
+                addToHand(newCard);
+            }
+        }
+        setTurn(1);
+    }
+
+    function addToHand(card) {
+        if (!context.newCards) {
+            setContext((oldContext) => {
+                return {
+                    ...oldContext,
+                    newCards: [card],
+                };
+            });
+            return;
+        }
+        setContext((oldContext) => {
+            return {
+                ...oldContext,
+                newCards: [...oldContext.newCards, card],
+            };
+        });
+        return;
+    }
+
     function attackPlayer(attacker) {
         if (!attacker.stats) return;
         const damage = calcDamage(attacker.stats.luck, attacker.stats.attack);
@@ -166,11 +215,13 @@ const BattleScreen = ({
     }
 
     useEffect(() => {
-        if (mobHealth <= 0) return;
         if (turn === 1) {
+            handRef.current.style.transform = "translateX(100vw)";
+            if (mobHealth <= 0) return;
             setTimeout(() => {
                 setTurn(0);
                 attackPlayer(mobDataRef.current);
+                handRef.current.style.transform = "none";
             }, 1000);
         }
     }, [turn]);
@@ -421,7 +472,12 @@ const BattleScreen = ({
                     dangerouslySetInnerHTML={{ __html: playerAttack }}
                     className="battle-log-entry"></div>
             </div>
-            <Hand handleCards={handleCards} stats={context.character.stats} />
+            <Hand
+                ref={handRef}
+                handleCards={handleCards}
+                stats={context.character.stats}
+                level={context.character.level}
+            />
         </div>
     );
 };

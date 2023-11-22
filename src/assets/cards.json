@@ -8,10 +8,38 @@
             ["luck", 0.75],
             ["attack", 0.5]
         ],
-        "description": "Sling a fireball"
+        "color": "red",
+        "description": "Sling a fireball",
+        "level": 2
     },
-    "lightning": {
-        "name": "Lightning",
+    "firebolt": {
+        "name": "Firebolt",
+        "type": "spell",
+        "target": "enemy",
+        "cost": 12,
+        "stats": [
+            ["luck", 1.5],
+            ["attack", 0.75]
+        ],
+        "color": "red",
+        "description": "Shoot a concentrated bolt of fire",
+        "level": 6
+    },
+    "incenerate": {
+        "name": "Incenerate",
+        "type": "spell",
+        "target": "enemy",
+        "cost": 20,
+        "stats": [
+            ["luck", 2.25],
+            ["attack", 0.75]
+        ],
+        "color": "red",
+        "description": "Incenerate your enemy",
+        "level": 11
+    },
+    "shock": {
+        "name": "Static shock",
         "type": "spell",
         "target": "enemy",
         "cost": 6,
@@ -19,10 +47,114 @@
             ["luck", 1],
             ["attack", 0.75]
         ],
-        "description": "Strike with lightning"
+        "color": "yellow",
+        "description": "Strike with electricity",
+        "level": 3
     },
-    "heal": {
-        "name": "Heal",
+    "lightning": {
+        "name": "Lightning",
+        "type": "spell",
+        "target": "enemy",
+        "cost": 14,
+        "stats": [
+            ["luck", 1.75],
+            ["attack", 0.75]
+        ],
+        "color": "yellow",
+        "description": "Strike with lightning",
+        "level": 8
+    },
+    "thunder": {
+        "name": "Thunder",
+        "type": "spell",
+        "target": "enemy",
+        "cost": 22,
+        "stats": [
+            ["luck", 2.5],
+            ["attack", 0.75]
+        ],
+        "color": "yellow",
+        "description": "Strike with lightning strong enough to deafen",
+        "level": 13
+    },
+    "wind-stab": {
+        "name": "Wind stab",
+        "type": "spell",
+        "target": "enemy",
+        "cost": 8,
+        "stats": [
+            ["luck", 1.25],
+            ["attack", 0.75]
+        ],
+        "color": "green",
+        "description": "Stab with wind",
+        "level": 4
+    },
+    "wind-cut": {
+        "name": "Wind cut",
+        "type": "spell",
+        "target": "enemy",
+        "cost": 16,
+        "stats": [
+            ["luck", 2],
+            ["attack", 0.75]
+        ],
+        "color": "green",
+        "description": "Cut with wind",
+        "level": 9
+    },
+    "wind-cleave": {
+        "name": "Wind cleave",
+        "type": "spell",
+        "target": "enemy",
+        "stats": [
+            ["luck", 2.75],
+            ["attack", 0.75]
+        ],
+        "color": "green",
+        "description": "Cleave with wind",
+        "level": 14
+    },
+    "water-shot": {
+        "name": "Water Shot",
+        "type": "spell",
+        "target": "enemy",
+        "cost": 10,
+        "stats": [
+            ["luck", 1.5],
+            ["attack", 0.75]
+        ],
+        "color": "blue",
+        "description": "Shoot a blast of water",
+        "level": 5
+    },
+    "water-cut": {
+        "name": "Water cut",
+        "type": "spell",
+        "target": "enemy",
+        "cost": 18,
+        "stats": [
+            ["luck", 2.25],
+            ["attack", 0.75]
+        ],
+        "color": "blue",
+        "description": "Cut with water",
+        "level": 10
+    },
+    "water-cleave": {
+        "name": "Water cleave",
+        "type": "spell",
+        "target": "enemy",
+        "stats": [
+            ["luck", 3],
+            ["attack", 0.75]
+        ],
+        "color": "blue",
+        "description": "Cleave with water",
+        "level": 15
+    },
+    "cure": {
+        "name": "cure",
         "type": "spell",
         "target": "self",
         "stats": [
@@ -30,38 +162,102 @@
             ["defense", 0.75]
         ],
         "cost": 3,
-        "description": "Heal your wounds"
+        "description": "Heal your wounds",
+        "level": 2
+    },
+    "heal": {
+        "name": "Heal",
+        "type": "spell",
+        "target": "self",
+        "stats": [
+            ["luck", 1.25],
+            ["defense", 1]
+        ],
+        "cost": 8,
+        "description": "Advanced healing",
+        "level": 7
+    },
+    "restore": {
+        "name": "Restore",
+        "type": "spell",
+        "target": "self",
+        "stats": [
+            ["luck", 1.5],
+            ["defense", 1.25]
+        ],
+        "cost": 13,
+        "description": "Master healing",
+        "level": 12
     },
     "stab": {
         "name": "Stab",
         "type": "weapon",
         "target": "enemy",
-        "stats": [["attack", 1.25]],
+        "stats": [["attack", 1.5]],
         "cost": 2,
-        "description": "Stab with a sword"
+        "description": "Stab with a sword",
+        "level": 2
     },
     "slash": {
         "name": "Slash",
         "type": "weapon",
         "target": "enemy",
-        "stats": [["attack", 1.5]],
+        "stats": [["attack", 2]],
         "cost": 4,
-        "description": "Slash with a sword"
+        "description": "Slash with a sword",
+        "level": 7
     },
     "cleave": {
         "name": "Cleave",
         "type": "weapon",
         "target": "enemy",
-        "stats": [["attack", 2]],
+        "stats": [["attack", 2.5]],
         "cost": 6,
-        "description": "Cleave with a sword"
+        "description": "Cleave with a sword",
+        "level": 12
     },
     "stone": {
         "name": "Stone",
         "type": "weapon",
         "target": "enemy",
         "cost": 0,
-        "stats": [["attack", 0.5]],
-        "description": "Throw a stone"
+        "stats": [["attack", 1]],
+        "description": "Throw a stone",
+        "level": 1
+    },
+    "potion": {
+        "name": "Health Potion",
+        "type": "spell",
+        "target": "self",
+        "cost": 0,
+        "stats": [
+            ["luck", 1],
+            ["defense", 0.75]
+        ],
+        "description": "Heal yourself with a potion",
+        "level": 999
+    },
+    "pick-up-rocks": {
+        "name": "Pick up rocks",
+        "type": "item",
+        "target": "self",
+        "cost": 0,
+        "stats": [
+            ["luck", 0.1],
+            ["attack", 0.1]
+        ],
+        "cards": ["stone"],
+        "description": "Pick up some stones",
+        "level": 1
+    },
+    "brew-potion": {
+        "name": "Brew potion",
+        "type": "item",
+        "target": "self",
+        "cost": 1,
+        "stats": [["luck", 0.2]],
+        "cards": ["potion"],
+        "description": "Brew potions",
+        "level": 3
     }
 }
