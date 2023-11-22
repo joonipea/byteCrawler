@@ -453,6 +453,22 @@ div[class*=" chars"]::after {
     transform: translateY(-10%) !important;
     z-index: 51;
 }
+.attack-card-type {
+    width: 100%;
+    height: 20%;
+}
+
+.attack-card-type--item {
+    background-color: #7bff7b;
+}
+
+.attack-card-type--weapon {
+    background-color: red;
+}
+
+.attack-card-type--spell {
+    background-color: #7b7bff;
+}
 
 .dialog-screen {
     position: absolute;
