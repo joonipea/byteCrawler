@@ -436,7 +436,7 @@ const BattleScreen = ({
         request.send();
     }, []);
     const colors = {
-        green: "136deg",
+        green: "136deg) brightness(3",
         red: "0deg",
         blue: "240deg",
         yellow: "60deg) brightness(3",
