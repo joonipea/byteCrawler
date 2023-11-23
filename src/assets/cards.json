@@ -204,6 +204,16 @@
         "description": "Master healing",
         "level": 12
     },
+    "full-heal": {
+        "name": "Full Heal",
+        "key": "full-heal",
+        "type": "spell",
+        "target": "self",
+        "stats": [["maxHealth", 1]],
+        "cost": 18,
+        "description": "Full healing",
+        "level": 17
+    },
     "stab": {
         "name": "Stab",
         "key": "stab",
@@ -257,6 +267,29 @@
         "description": "Heal yourself with a potion",
         "level": 999
     },
+    "hi-potion": {
+        "name": "Hi Potion",
+        "key": "hi-potion",
+        "type": "spell",
+        "target": "self",
+        "cost": 0,
+        "stats": [
+            ["luck", 1.25],
+            ["defense", 1]
+        ],
+        "description": "Heal yourself with an elixer",
+        "level": 999
+    },
+    "elixer": {
+        "name": "Elixer",
+        "key": "elixer",
+        "type": "spell",
+        "target": "self",
+        "cost": 0,
+        "stats": [["maxHealth", 1]],
+        "description": "Heal yourself with an elixer",
+        "level": 999
+    },
     "pick-up-rocks": {
         "name": "Pick up rocks",
         "key": "pick-up-rocks",
@@ -282,6 +315,28 @@
         "description": "Brew potions",
         "level": 3
     },
+    "brew-hi-potion": {
+        "name": "Brew hi-potion",
+        "key": "brew-hi-potion",
+        "type": "item",
+        "target": "self",
+        "cost": 2,
+        "stats": [["luck", 0.2]],
+        "cards": ["hi-potion"],
+        "description": "Brew hi-potions",
+        "level": 8
+    },
+    "brew-elixer": {
+        "name": "Brew elixer",
+        "key": "brew-elixer",
+        "type": "item",
+        "target": "self",
+        "cost": 3,
+        "stats": [["luck", 0.2]],
+        "cards": ["elixer"],
+        "description": "Brew elixers",
+        "level": 13
+    },
     "uno": {
         "name": "UNO!!",
         "key": "uno",
@@ -291,7 +346,7 @@
         "cost": 0,
         "cards": 3,
         "description": "Draw 3 cards",
-        "level": 1
+        "level": 10
     },
     "draw-two": {
         "name": "Draw Two",
@@ -313,6 +368,6 @@
         "cost": 0,
         "cards": 5,
         "description": "Draw 5 cards",
-        "level": 1
+        "level": 15
     }
 }
