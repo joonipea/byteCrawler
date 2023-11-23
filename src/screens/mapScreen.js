@@ -434,7 +434,8 @@ const MapScreen = () => {
     }
 
     function resetHand() {
-        const cardsNeeded = 6 - context.hand.length;
+        const contextCopy = contextRef.current;
+        const cardsNeeded = 5 - contextCopy.hand.length;
         for (let i = 0; i < cardsNeeded; i++) {
             const randomCard = pickCard(context.character.level);
             const stats = context.character.stats;
@@ -449,7 +450,8 @@ const MapScreen = () => {
     }
 
     function addToHand(card) {
-        if (!context.hand) {
+        const contextCopy = contextRef.current;
+        if (!contextCopy.hand) {
             setContext((oldContext) => {
                 return {
                     ...oldContext,
@@ -484,7 +486,7 @@ const MapScreen = () => {
             setLevelUpScreen(
                 <LevelUpScreen setParent={setLevelUpScreen}></LevelUpScreen>
             );
-            resetHand(cardsNeeded);
+            resetHand();
         }
     }, [score]);
 
