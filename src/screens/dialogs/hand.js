@@ -9,12 +9,9 @@ const Hand = forwardRef(function Hand({ stats, level, handleCards }, ref) {
     const [context, setContext] = useContext(AppContext);
 
     const pickCard = (level) => {
+        const cardNames = Object.keys(CARDS);
         const randomCard =
-            CARDS[
-                Object.keys(CARDS)[
-                    Math.floor(Math.random() * Object.keys(CARDS).length)
-                ]
-            ];
+            CARDS[cardNames[Math.floor(Math.random() * cardNames.length)]];
         if (randomCard.level <= level) return randomCard;
         return pickCard(level);
     };
@@ -33,13 +30,19 @@ const Hand = forwardRef(function Hand({ stats, level, handleCards }, ref) {
     }, [context.newCards]);
 
     useEffect(() => {
+        if (context.hand && context.hand.length > 0) {
+            setHand(context.hand);
+            return;
+        }
         const newHand = [];
-        console.log(Object.keys(CARDS));
         for (let i = 0; i < 5; i++) {
             let randomCard = pickCard(level);
             newHand.push(addToHand(randomCard));
         }
         setHand(newHand);
+        setContext((oldContext) => {
+            return { ...oldContext, hand: newHand };
+        });
     }, []);
 
     function addToHand(card) {
@@ -57,6 +60,9 @@ const Hand = forwardRef(function Hand({ stats, level, handleCards }, ref) {
         const newHand = hand.filter((c, i) => i !== index);
         if (newHand.length > 0) {
             setHand(newHand);
+            setContext((oldContext) => {
+                return { ...oldContext, hand: newHand };
+            });
             return;
         }
         const randomCard = pickCard(level);
@@ -67,10 +73,12 @@ const Hand = forwardRef(function Hand({ stats, level, handleCards }, ref) {
         }
         randomCard.damage = damage;
         setHand([randomCard]);
+        setContext((oldContext) => {
+            return { ...oldContext, hand: [randomCard] };
+        });
     };
 
     const renderHand = () => {
-        console.log(hand);
         return hand.map((card, index) => {
             return (
                 <Card

@@ -1,6 +1,7 @@
 {
     "fireball": {
         "name": "Fireball",
+        "key": "fireball",
         "type": "spell",
         "target": "enemy",
         "cost": 4,
@@ -14,6 +15,7 @@
     },
     "firebolt": {
         "name": "Firebolt",
+        "key": "firebolt",
         "type": "spell",
         "target": "enemy",
         "cost": 12,
@@ -27,6 +29,7 @@
     },
     "incenerate": {
         "name": "Incenerate",
+        "key": "incenerate",
         "type": "spell",
         "target": "enemy",
         "cost": 20,
@@ -40,6 +43,7 @@
     },
     "shock": {
         "name": "Static shock",
+        "key": "shock",
         "type": "spell",
         "target": "enemy",
         "cost": 6,
@@ -53,6 +57,7 @@
     },
     "lightning": {
         "name": "Lightning",
+        "key": "lightning",
         "type": "spell",
         "target": "enemy",
         "cost": 14,
@@ -66,6 +71,7 @@
     },
     "thunder": {
         "name": "Thunder",
+        "key": "thunder",
         "type": "spell",
         "target": "enemy",
         "cost": 22,
@@ -79,6 +85,7 @@
     },
     "wind-stab": {
         "name": "Wind stab",
+        "key": "wind-stab",
         "type": "spell",
         "target": "enemy",
         "cost": 8,
@@ -92,6 +99,7 @@
     },
     "wind-cut": {
         "name": "Wind cut",
+        "key": "wind-cut",
         "type": "spell",
         "target": "enemy",
         "cost": 16,
@@ -105,6 +113,7 @@
     },
     "wind-cleave": {
         "name": "Wind cleave",
+        "key": "wind-cleave",
         "type": "spell",
         "target": "enemy",
         "stats": [
@@ -117,6 +126,7 @@
     },
     "water-shot": {
         "name": "Water Shot",
+        "key": "water-shot",
         "type": "spell",
         "target": "enemy",
         "cost": 10,
@@ -130,6 +140,7 @@
     },
     "water-cut": {
         "name": "Water cut",
+        "key": "water-cut",
         "type": "spell",
         "target": "enemy",
         "cost": 18,
@@ -143,6 +154,7 @@
     },
     "water-cleave": {
         "name": "Water cleave",
+        "key": "water-cleave",
         "type": "spell",
         "target": "enemy",
         "stats": [
@@ -154,7 +166,8 @@
         "level": 15
     },
     "cure": {
-        "name": "cure",
+        "name": "Cure",
+        "key": "cure",
         "type": "spell",
         "target": "self",
         "stats": [
@@ -167,6 +180,7 @@
     },
     "heal": {
         "name": "Heal",
+        "key": "heal",
         "type": "spell",
         "target": "self",
         "stats": [
@@ -179,6 +193,7 @@
     },
     "restore": {
         "name": "Restore",
+        "key": "restore",
         "type": "spell",
         "target": "self",
         "stats": [
@@ -191,6 +206,7 @@
     },
     "stab": {
         "name": "Stab",
+        "key": "stab",
         "type": "weapon",
         "target": "enemy",
         "stats": [["attack", 1.5]],
@@ -200,6 +216,7 @@
     },
     "slash": {
         "name": "Slash",
+        "key": "slash",
         "type": "weapon",
         "target": "enemy",
         "stats": [["attack", 2]],
@@ -209,6 +226,7 @@
     },
     "cleave": {
         "name": "Cleave",
+        "key": "cleave",
         "type": "weapon",
         "target": "enemy",
         "stats": [["attack", 2.5]],
@@ -218,6 +236,7 @@
     },
     "stone": {
         "name": "Stone",
+        "key": "stone",
         "type": "weapon",
         "target": "enemy",
         "cost": 0,
@@ -227,6 +246,7 @@
     },
     "potion": {
         "name": "Health Potion",
+        "key": "potion",
         "type": "spell",
         "target": "self",
         "cost": 0,
@@ -239,6 +259,7 @@
     },
     "pick-up-rocks": {
         "name": "Pick up rocks",
+        "key": "pick-up-rocks",
         "type": "item",
         "target": "self",
         "cost": 0,
@@ -252,6 +273,7 @@
     },
     "brew-potion": {
         "name": "Brew potion",
+        "key": "brew-potion",
         "type": "item",
         "target": "self",
         "cost": 1,
@@ -259,5 +281,38 @@
         "cards": ["potion"],
         "description": "Brew potions",
         "level": 3
+    },
+    "uno": {
+        "name": "UNO!!",
+        "key": "uno",
+        "type": "draw",
+        "target": "self",
+        "stats": [["luck", 0]],
+        "cost": 0,
+        "cards": 3,
+        "description": "Draw 3 cards",
+        "level": 1
+    },
+    "draw-two": {
+        "name": "Draw Two",
+        "key": "draw-two",
+        "type": "draw",
+        "target": "self",
+        "stats": [["luck", 0]],
+        "cost": 0,
+        "cards": 2,
+        "description": "Draw 2 cards",
+        "level": 1
+    },
+    "full-draw": {
+        "name": "Full Draw",
+        "key": "full-draw",
+        "type": "draw",
+        "target": "self",
+        "stats": [["luck", 0]],
+        "cost": 0,
+        "cards": 5,
+        "description": "Draw 5 cards",
+        "level": 1
     }
 }

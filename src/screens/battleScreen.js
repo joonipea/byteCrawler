@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import { AppContext } from "../appContext";
 import Hand from "./dialogs/hand";
+import CARDS from "../assets/cards.json";
 
 const BattleScreen = ({
     mob,
@@ -85,8 +86,6 @@ const BattleScreen = ({
                 0
             );
         }
-        console.log(contextRef.current.character.stats.health);
-        console.log(newHealth);
         setContext((oldContext) => {
             return {
                 ...oldContext,
@@ -115,7 +114,6 @@ const BattleScreen = ({
     }
 
     function handleCards(card) {
-        console.log(card);
         switch (card.target) {
             case "enemy":
                 attackCard(card);
@@ -150,6 +148,9 @@ const BattleScreen = ({
             case "item":
                 itemCard(card);
                 break;
+            case "draw":
+                drawCard(card);
+                break;
             default:
                 break;
         }
@@ -177,6 +178,30 @@ const BattleScreen = ({
             }
         }
         setTurn(1);
+    }
+
+    function drawCard(card) {
+        const numberOfCards = card.cards;
+        for (let i = 0; i < numberOfCards; i++) {
+            const randomCard = pickCard(context.character.level);
+            addToHand(randomCard.key);
+        }
+        setTurn(1);
+    }
+
+    const pickCard = (level) => {
+        const cardNames = Object.keys(CARDS);
+        const randomCard =
+            CARDS[cardNames[Math.floor(Math.random() * cardNames.length)]];
+        if (randomCard.level <= level) return randomCard;
+        return pickCard(level);
+    };
+
+    function resetHand() {
+        for (let i = 0; i < 5; i++) {
+            let randomCard = pickCard(context.character.level);
+            addToHand(randomCard.key);
+        }
     }
 
     function addToHand(card) {

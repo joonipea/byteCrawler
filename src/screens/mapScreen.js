@@ -11,6 +11,7 @@ import LevelUpScreen from "./levelUpScreen";
 import LoadingScreen from "./loadingScreen";
 import DialogScreen from "./dialogScreen";
 import PauseScreen from "./pauseScreen";
+import CARDS from "../assets/cards.json";
 
 const MapScreen = () => {
     const [context, setContext] = useContext(AppContext);
@@ -140,6 +141,7 @@ const MapScreen = () => {
             unBindControls();
             setLoadingScreen(<LoadingScreen></LoadingScreen>);
             nextMap();
+            resetHand();
         }
         if (isTomb(nextCell)) {
             unBindControls();
@@ -423,6 +425,48 @@ const MapScreen = () => {
         }
     }, [tick]);
 
+    function pickCard(level) {
+        const cardNames = Object.keys(CARDS);
+        const randomCard =
+            CARDS[cardNames[Math.floor(Math.random() * cardNames.length)]];
+        if (randomCard.level <= level) return randomCard;
+        return pickCard(level);
+    }
+
+    function resetHand() {
+        const cardsNeeded = 6 - context.hand.length;
+        for (let i = 0; i < cardsNeeded; i++) {
+            const randomCard = pickCard(context.character.level);
+            const stats = context.character.stats;
+            const cardProfeciencies = randomCard.stats;
+            let damage = 0;
+            for (let profeciency of cardProfeciencies) {
+                damage += Math.ceil(stats[profeciency[0]] * profeciency[1]);
+            }
+            randomCard.damage = damage;
+            addToHand(randomCard);
+        }
+    }
+
+    function addToHand(card) {
+        if (!context.hand) {
+            setContext((oldContext) => {
+                return {
+                    ...oldContext,
+                    hand: [card],
+                };
+            });
+            return;
+        }
+        setContext((oldContext) => {
+            return {
+                ...oldContext,
+                hand: [...oldContext.hand, card],
+            };
+        });
+        return;
+    }
+
     useEffect(() => {
         if (score <= 0) return;
 
@@ -440,6 +484,7 @@ const MapScreen = () => {
             setLevelUpScreen(
                 <LevelUpScreen setParent={setLevelUpScreen}></LevelUpScreen>
             );
+            resetHand(cardsNeeded);
         }
     }, [score]);
 
@@ -538,8 +583,13 @@ const MapScreen = () => {
             {dialogScreen}
             <p style={{ textAlign: "center" }}>
                 Floor {context.map.floor}: {context.map.name.replace(/_/g, " ")}{" "}
-                - Score: {context.score ? context.score : 0} - Gold:{" "}
-                {context.gold ? context.gold : 0}
+                - Experience: {context.score ? context.score : 0} /{" "}
+                {Math.floor(
+                    context.character.level ** 1.3 *
+                        context.character.rarity *
+                        500
+                )}{" "}
+                - Gold: {context.gold ? context.gold : 0}
             </p>
             <div ref={mapRef} id="map"></div>
         </div>
