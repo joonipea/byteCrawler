@@ -445,6 +445,7 @@ div[class*=" chars"]::after {
     cursor: pointer;
     transition: all 0.2s ease-in-out;
     margin: 10px var(--gap);
+    font-size: 24px;
 }
 
 .attack-card:hover {
@@ -784,7 +785,6 @@ http://aleclownes.com/2017/02/01/crt-display.html
     pointer-events: none;
 }
 .crt {
-    animation: textShadow 1.6s infinite;
     margin: auto;
     position: relative;
     height: 100svh;
