@@ -582,23 +582,52 @@ const MapScreen = () => {
         request.send();
     }, []);
 
+    const innerExpBar = () => {
+        const expNeeded = Math.floor(
+            context.character.level ** 1.3 * context.character.rarity * 500
+        );
+        const lastExpNeeded = Math.floor(
+            (context.character.level - 1) ** 1.3 *
+                context.character.rarity *
+                500
+        );
+        return Math.floor(
+            ((context.score - lastExpNeeded) / (expNeeded - lastExpNeeded)) *
+                100
+        );
+    };
+
     return (
         <div>
+            <style>
+                {`
+                    .exp-bar {
+                        width: 50%;
+                        height: 24px;
+                        border: 2px solid #fff;
+                        overflow: hidden;
+                        margin: auto;
+                    }
+                    .inner-exp-bar {
+                        height: 100%;
+                        background-color: #fff;
+                        width: ${innerExpBar()}%;
+                        color: var(--background-color);
+                    }
+                    `}
+            </style>
             <div ref={stopRef}></div>
             {battleScreen}
             {loadingScreen}
             {levelUpScreen}
             {dialogScreen}
-            <p style={{ textAlign: "center" }}>
+            <div style={{ textAlign: "center" }}>
                 Floor {context.map.floor}: {context.map.name.replace(/_/g, " ")}{" "}
-                - Experience: {context.score ? context.score : 0} /{" "}
-                {Math.floor(
-                    context.character.level ** 1.3 *
-                        context.character.rarity *
-                        500
-                )}{" "}
-                - Gold: {context.gold ? context.gold : 0}
-            </p>
+                <div className="exp-bar">
+                    <div className="inner-exp-bar">{innerExpBar()}%</div>
+                </div>
+                Gold: {context.gold ? context.gold : 0}
+            </div>
             <div ref={mapRef} id="map"></div>
         </div>
     );
