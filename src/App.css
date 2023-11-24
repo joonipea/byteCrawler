@@ -325,6 +325,30 @@ div[class*=" chars"]::after {
     transition: opacity 0.5s ease-in-out;
 }
 
+.enemy-battler-hp-bar {
+    width: 128px;
+    height: 16px;
+    border: var(--primary-color) 2px solid;
+}
+
+.enemy-battler-hp-bar--inner {
+    background-color: red;
+    height: 100%;
+    transition: width 0.2s ease-in-out;
+}
+
+.player-battler-hp-bar {
+    width: 128px;
+    height: 16px;
+    border: var(--primary-color) 2px solid;
+}
+
+.player-battler-hp-bar--inner {
+    background-color: #7bff7b;
+    height: 100%;
+    transition: width 0.2s ease-in-out;
+}
+
 .damage-message {
     position: absolute;
     font-size: 18px;

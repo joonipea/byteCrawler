@@ -471,6 +471,16 @@ const BattleScreen = ({
                 <div className="enemy-battler sprite-container">
                     <div ref={mobDamageRef} className="damage-message"></div>
                     <div className="enemy-battler-name">{mobName}</div>
+                    <div className="enemy-battler-hp-bar">
+                        <div
+                            className="enemy-battler-hp-bar--inner"
+                            style={{
+                                width: `${Math.max(
+                                    (mobHealth / mobMaxHealth) * 100,
+                                    0
+                                )}%`,
+                            }}></div>
+                    </div>
                     <div className="enemy-battler-hp">
                         {mobHealth} / {mobMaxHealth}
                     </div>
@@ -480,6 +490,17 @@ const BattleScreen = ({
                     <div ref={playerDamageRef} className="damage-message"></div>
                     <div className="player-battler-name">
                         {context.character.name.replace(/_/g, " ")}
+                    </div>
+                    <div className="player-battler-hp-bar">
+                        <div
+                            className="player-battler-hp-bar--inner"
+                            style={{
+                                width: `${
+                                    (context.character.stats.health /
+                                        context.character.stats.maxHealth) *
+                                    100
+                                }%`,
+                            }}></div>
                     </div>
                     <div className="player-battler-hp">
                         {context.character.stats.health} /{" "}
