@@ -379,12 +379,14 @@ const BattleScreen = ({
         if (context.character.stats.health <= 0) {
             createGhost();
             stopRef.current.click();
-            setContext((oldContext) => {
-                return {
-                    ...oldContext,
-                    screen: "gameover",
-                };
-            });
+            setTimeout(() => {
+                setContext((oldContext) => {
+                    return {
+                        ...oldContext,
+                        screen: "gameover",
+                    };
+                });
+            }, 1000);
         }
     }, [context.character.stats.health]);
 

@@ -357,7 +357,7 @@
         "cost": 0,
         "cards": 2,
         "description": "Draw 2 cards",
-        "level": 1
+        "level": 5
     },
     "full-draw": {
         "name": "Full Draw",

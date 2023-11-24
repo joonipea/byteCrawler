@@ -483,8 +483,14 @@ const MapScreen = () => {
             score >=
             context.character.level ** 1.3 * context.character.rarity * 500
         ) {
+            const level = context.character.level + 1;
+            const learnedCards = Object.values(CARDS).filter(
+                (c) => c.level == level
+            );
             setLevelUpScreen(
-                <LevelUpScreen setParent={setLevelUpScreen}></LevelUpScreen>
+                <LevelUpScreen
+                    learnedCards={learnedCards}
+                    setParent={setLevelUpScreen}></LevelUpScreen>
             );
             resetHand();
         }
