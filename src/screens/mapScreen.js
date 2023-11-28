@@ -646,7 +646,7 @@ const MapScreen = () => {
                     unBindControls();
                     setDialogScreen(
                         <PauseScreen
-                            bindControls={() => bindControls}
+                            bindControls={bindControls}
                             setParent={setDialogScreen}></PauseScreen>
                     );
                 }}></div>
