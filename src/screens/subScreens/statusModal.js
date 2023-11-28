@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import SettingsModal from "./settingsModal";
+import DeckModal from "./deckModal";
 import { AppContext } from "../../appContext";
 
 const StatusModal = ({ setParent }) => {
@@ -40,6 +41,13 @@ const StatusModal = ({ setParent }) => {
                 <div className="player-stats">{playerStats}</div>
             </div>
             <div className="player-inventory">{inventory}</div>
+            <button
+                onClick={() =>
+                    setParent(<DeckModal setParent={setParent}></DeckModal>)
+                }
+                className="btn">
+                Deck
+            </button>
             <button
                 onClick={() =>
                     setParent(

@@ -29,6 +29,14 @@ const MapScreen = () => {
     contextRef.current = context;
     var audio_context;
 
+    function getAvailableCards() {
+        if (contextRef.current.deck && contextRef.current.deck.length > 0) {
+            return contextRef.current.deck;
+        }
+        const cards = Object.values(CARDS);
+        return cards.filter((card) => card.level <= context.character.level);
+    }
+
     function createMap(data) {
         const container = document.getElementById("map");
         for (const row of data) {
@@ -188,7 +196,7 @@ const MapScreen = () => {
             if (context.codex[iName]) {
                 setGold((oldGold) => oldGold + context.codex[iName].price);
                 nextCell.classList.remove(nextCell.classList[1]);
-                nextCell.classList.add("floor");
+                nextCell.classList.add("open-chest");
             } else {
                 getItemPrice(context.worldName, nextCell.classList[1]).then(
                     (item) => {
@@ -203,7 +211,7 @@ const MapScreen = () => {
                         });
                         setGold((oldGold) => oldGold + item.price);
                         nextCell.classList.remove(nextCell.classList[1]);
-                        nextCell.classList.add("floor");
+                        nextCell.classList.add("open-chest");
                     }
                 );
             }
@@ -337,7 +345,6 @@ const MapScreen = () => {
 
     //save the game using up to date context
     const saveGame = useCallback(() => {
-        console.log("game saved");
         let contextCopy = contextRef.current;
         localStorage.setItem("saveData", JSON.stringify(contextCopy));
     }, [context]);
@@ -426,7 +433,9 @@ const MapScreen = () => {
     }, [tick]);
 
     function pickCard(level) {
-        const cardNames = Object.keys(CARDS);
+        const availableCards = getAvailableCards();
+        const cardNames = availableCards.map((card) => card.key);
+        console.log(cardNames);
         const randomCard =
             CARDS[cardNames[Math.floor(Math.random() * cardNames.length)]];
         if (randomCard.level <= level) return randomCard;
@@ -437,7 +446,7 @@ const MapScreen = () => {
         const contextCopy = contextRef.current;
         const cardsNeeded = 5 - contextCopy.hand.length;
         for (let i = 0; i < cardsNeeded; i++) {
-            const randomCard = pickCard(context.character.level);
+            const randomCard = pickCard(contextRef.current.character.level);
             const stats = context.character.stats;
             const cardProfeciencies = randomCard.stats;
             let damage = 0;
@@ -481,7 +490,7 @@ const MapScreen = () => {
 
         if (
             score >=
-            context.character.level ** 1.3 * context.character.rarity * 500
+            context.character.level ** 1.6 * context.character.rarity * 500
         ) {
             const level = context.character.level + 1;
             const learnedCards = Object.values(CARDS).filter(
@@ -584,17 +593,19 @@ const MapScreen = () => {
 
     const innerExpBar = () => {
         const expNeeded = Math.floor(
-            context.character.level ** 1.3 * context.character.rarity * 500
+            context.character.level ** 1.6 * context.character.rarity * 500
         );
         const lastExpNeeded = Math.floor(
-            (context.character.level - 1) ** 1.3 *
+            (context.character.level - 1) ** 1.6 *
                 context.character.rarity *
                 500
         );
-        return Math.floor(
+        const currentPercent = Math.floor(
             ((context.score - lastExpNeeded) / (expNeeded - lastExpNeeded)) *
                 100
         );
+        if (isNaN(currentPercent)) return 0;
+        return currentPercent;
     };
 
     return (
@@ -621,7 +632,7 @@ const MapScreen = () => {
             {loadingScreen}
             {levelUpScreen}
             {dialogScreen}
-            <div style={{ textAlign: "center" }}>
+            <div className="status-bar">
                 Floor {context.map.floor}: {context.map.name.replace(/_/g, " ")}{" "}
                 <div className="exp-bar">
                     <div className="inner-exp-bar">{innerExpBar()}%</div>
@@ -629,6 +640,16 @@ const MapScreen = () => {
                 Gold: {context.gold ? context.gold : 0}
             </div>
             <div ref={mapRef} id="map"></div>
+            <div
+                id="mobile-menu"
+                onClick={() => {
+                    unBindControls();
+                    setDialogScreen(
+                        <PauseScreen
+                            bindControls={() => bindControls}
+                            setParent={setDialogScreen}></PauseScreen>
+                    );
+                }}></div>
         </div>
     );
 };

@@ -25,7 +25,6 @@ const NewGameScreen = () => {
                                 const charIndex = Math.floor(
                                     Math.random() * chars.length
                                 );
-                                console.log(chars[charIndex]);
                                 const newContext = {
                                     ...context,
                                     screen: "map",
@@ -35,6 +34,8 @@ const NewGameScreen = () => {
                                     worldName: name,
                                     bestiary: {},
                                     codex: {},
+                                    hand: [],
+                                    deck: [],
                                 };
                                 setContext(newContext);
                                 localStorage.setItem(

@@ -37,6 +37,14 @@ const BattleScreen = ({
     mobDataRef.current = mobData;
     var audio_context;
 
+    function getAvailableCards() {
+        if (contextRef.current.deck && contextRef.current.deck.length > 0) {
+            return contextRef.current.deck;
+        }
+        const cards = Object.values(CARDS);
+        return cards.filter((card) => card.level <= context.character.level);
+    }
+
     useEffect(() => {
         const mName = mob.split(":")[1];
         if (context.bestiary[mName]) {
@@ -44,7 +52,6 @@ const BattleScreen = ({
             setMobHealth(context.bestiary[mName].stats.health);
             setMobMaxHealth(context.bestiary[mName].stats.maxHealth);
             setMobName(context.bestiary[mName].name.replace(/_/g, " "));
-            console.log("cached");
             return;
         }
         fetch(process.env.REACT_APP_MIDDLEWARE_URL + "/get", {
@@ -190,7 +197,8 @@ const BattleScreen = ({
     }
 
     const pickCard = (level) => {
-        const cardNames = Object.keys(CARDS);
+        const availableCards = getAvailableCards();
+        const cardNames = availableCards.map((card) => card.key);
         const randomCard =
             CARDS[cardNames[Math.floor(Math.random() * cardNames.length)]];
         if (randomCard.level <= level) return randomCard;
@@ -237,6 +245,9 @@ const BattleScreen = ({
                 " "
             )} for ${damage} damage.`
         );
+        if (context.character.stats.health <= 0) return;
+        setTurn(0);
+        handRef.current.style.transform = "none";
     }
 
     useEffect(() => {
@@ -244,9 +255,7 @@ const BattleScreen = ({
             handRef.current.style.transform = "translateX(100vw)";
             if (mobHealth <= 0) return;
             setTimeout(() => {
-                setTurn(0);
                 attackPlayer(mobDataRef.current);
-                handRef.current.style.transform = "none";
             }, 1000);
         }
     }, [turn]);

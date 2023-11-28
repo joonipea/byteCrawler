@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useContext, forwardRef } from "react";
+import React, {
+    useEffect,
+    useState,
+    useContext,
+    forwardRef,
+    useRef,
+} from "react";
 import CARDS from "../../assets/cards.json";
 import Card from "./sub dialogs/card";
 import { AppContext } from "../../appContext";
@@ -7,9 +13,22 @@ const Hand = forwardRef(function Hand({ stats, level, handleCards }, ref) {
     const [hand, setHand] = useState([]);
     const [renderedHand, setRenderedHand] = useState([]);
     const [context, setContext] = useContext(AppContext);
+    const contextRef = useRef();
+    contextRef.current = context;
 
+    // set available cards from context deck if it doesn't exist set the first 5 available cards equal to or less than the level
+    function getAvailableCards() {
+        if (contextRef.current.deck && contextRef.current.deck.length > 0) {
+            return contextRef.current.deck;
+        }
+        const cards = Object.values(CARDS);
+        return cards.filter((card) => card.level <= context.character.level);
+    }
     const pickCard = (level) => {
-        const cardNames = Object.keys(CARDS);
+        const availableCards = getAvailableCards();
+
+        const cardNames = availableCards.map((card) => card.key);
+        console.log(availableCards);
         const randomCard =
             CARDS[cardNames[Math.floor(Math.random() * cardNames.length)]];
         if (randomCard.level <= level) return randomCard;
@@ -65,16 +84,22 @@ const Hand = forwardRef(function Hand({ stats, level, handleCards }, ref) {
             });
             return;
         }
-        const randomCard = pickCard(level);
-        const cardProfeciencies = randomCard.stats;
-        let damage = 0;
-        for (let profeciency of cardProfeciencies) {
-            damage += Math.ceil(stats[profeciency[0]] * profeciency[1]);
+        const newCards = [];
+        const newCardsLength = Math.min(Math.ceil(stats.luck / 10), 7);
+        for (let i = 0; i < newCardsLength; i++) {
+            const randomCard = pickCard(level);
+            const cardProfeciencies = randomCard.stats;
+            let damage = 0;
+            for (let profeciency of cardProfeciencies) {
+                damage += Math.ceil(stats[profeciency[0]] * profeciency[1]);
+            }
+            randomCard.damage = damage;
+            newCards.push(randomCard);
         }
-        randomCard.damage = damage;
-        setHand([randomCard]);
+
+        setHand(newCards);
         setContext((oldContext) => {
-            return { ...oldContext, hand: [randomCard] };
+            return { ...oldContext, hand: newCards };
         });
     };
 

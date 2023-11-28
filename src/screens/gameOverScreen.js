@@ -22,6 +22,10 @@ const hints = [
 const GameOverScreen = () => {
     const [context, setContext] = useContext(AppContext);
     const stopRef = useRef();
+    const spiritMessage = useRef();
+    const reincarnate = useRef();
+    const title = useRef();
+    const ghost = useRef();
 
     function startScreen() {
         window.location.reload();
@@ -41,16 +45,30 @@ const GameOverScreen = () => {
         let character = await getNewCharacter();
         let newCharacter =
             character[Math.floor(Math.random() * character.length)];
-        setContext((oldContext) => {
-            return {
-                ...oldContext,
-                map: townMap,
-                screen: "map",
-                character: newCharacter,
-                score: 0,
-            };
-        });
-        stopRef.current.click();
+        let message = `The spirit of ${newCharacter.name.replaceAll(
+            "_",
+            " "
+        )} has entered the golem.<br>`;
+        let { stats } = newCharacter;
+        let { health, maxHealth, attack, defense, luck } = stats;
+        let statMessage = `Stats:<br>${health}/${maxHealth} HP<br>${attack} ATK<br>${defense} DEF<br>${luck} LCK`;
+        message += statMessage;
+        spiritMessage.current.innerHTML = message;
+        title.current.style.display = "none";
+        reincarnate.current.style.display = "none";
+        ghost.current.style.animation = "floatDown 1s ease-in-out forwards";
+        setTimeout(() => {
+            setContext((oldContext) => {
+                return {
+                    ...oldContext,
+                    map: townMap,
+                    screen: "map",
+                    character: newCharacter,
+                    score: 0,
+                };
+            });
+            stopRef.current.click();
+        }, 10000);
     }
 
     async function getTownMap() {
@@ -130,17 +148,27 @@ const GameOverScreen = () => {
     }, []);
 
     return (
-        <div className="menu-container">
+        <div
+            style={{ justifyContent: "flex-start !important" }}
+            className="menu-container">
             <div ref={stopRef}></div>
             <div className="title-container">Game Over</div>
+            <div ref={ghost} className="ghost-container"></div>
+            <div className="art-container--gameover"></div>
+            <p
+                style={{ textAlign: "center", width: "75%" }}
+                ref={spiritMessage}></p>
             <p style={{ textAlign: "center", width: "75%" }}>
                 Hint: {hints[Math.floor(Math.random() * hints.length)]}
             </p>
-            <button onClick={() => startScreen()} className="btn">
-                Return to title
+            <button
+                ref={reincarnate}
+                onClick={() => townScreen()}
+                className="btn">
+                Reincarnate
             </button>
-            <button onClick={() => townScreen()} className="btn">
-                Return to town
+            <button ref={title} onClick={() => startScreen()} className="btn">
+                Return to title
             </button>
         </div>
     );
