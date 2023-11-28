@@ -996,6 +996,7 @@ input[type="range"]::-moz-range-thumb {
     bottom: 5%;
     left: 50%;
     transform: translate(-50%, 0);
+    cursor: pointer;
 }
 
 #mobile-menu::after {
