@@ -3,7 +3,7 @@ import { AppContext } from "../appContext";
 
 const LevelUpScreen = ({ setParent, learnedCards }) => {
     const [context, setContext] = useContext(AppContext);
-    const [statPoints, setStatPoints] = useState(context.character.level * 2);
+    const [statPoints, setStatPoints] = useState(4);
     const [currentStats, setCurrentStats] = useState({
         health: context.character.stats.health,
         maxHealth: context.character.stats.maxHealth,

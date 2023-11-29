@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useRef } from "react";
 import { AppContext } from "../appContext";
 const hints = [
-    "If you find yourself dying a lot, your character might be too weak. Try starting a new game with the same name.",
     "Enemies will only follow you if they're within 3 tiles of you.",
     "Yellow tiles are save points. Use them.",
     "If you're low health. Run.",
@@ -14,9 +13,6 @@ const hints = [
     "Some characters level up faster than others.",
     "Some characters are stronger than others.",
     "Characters that start stronger level up slower.",
-    "Luck handles more than just critical hits.",
-    "Luck determines damage range.",
-    "Luck determines battle order.",
 ];
 
 const GameOverScreen = () => {
@@ -65,6 +61,7 @@ const GameOverScreen = () => {
                     screen: "map",
                     character: newCharacter,
                     score: 0,
+                    hand: [],
                 };
             });
             stopRef.current.click();

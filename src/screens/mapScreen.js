@@ -192,7 +192,7 @@ const MapScreen = () => {
             );
         }
         if (isItem(nextCell)) {
-            const iName = nextCell.classList[1];
+            const iName = nextCell.classList[1].split(":")[1];
             if (context.codex[iName]) {
                 setGold((oldGold) => oldGold + context.codex[iName].price);
                 nextCell.classList.remove(nextCell.classList[1]);
