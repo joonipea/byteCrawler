@@ -24,7 +24,9 @@ const StatusModal = ({ setParent }) => {
             inv.push(
                 <div
                     key={key}
-                    style={{ backgroundImage: `url("./sprites/${item}.jpg")` }}
+                    style={{
+                        backgroundImage: `url("./sprites/${item}.png")`,
+                    }}
                     className="item-sprite"></div>
             );
         }
