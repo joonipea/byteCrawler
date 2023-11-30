@@ -440,16 +440,16 @@ div[class*=" chars"]::after {
     padding: 12px;
 }
 
-.pause-container > .toolbar {
+.toolbar {
     height: 36px;
     width: 100%;
     display: flex;
     flex-direction: row;
 }
-.pause-container > .toolbar > .pause-title {
+.toolbar > .pause-title {
     flex-grow: 1;
 }
-.pause-container > .toolbar > .btn {
+.toolbar > .btn {
     width: 36px;
     margin: 0;
     padding: 3px;
@@ -1010,4 +1010,33 @@ input[type="range"]::-moz-range-thumb {
     filter: brightness(0.1) brightness(50%) sepia(100%) saturate(1000%)
         brightness(6);
     background-size: cover;
+}
+
+.cheat-console__output {
+    height: 90%;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-end;
+}
+.cheat-console__output > div {
+    width: 100%;
+}
+
+.cheat-console {
+    display: flex;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 3;
+    background-color: var(--background-color);
+    flex-direction: column;
+}
+
+form.cheat-console__form {
+    display: flex;
+}
+
+input.cheat-console__input {
+    width: 90%;
 }
