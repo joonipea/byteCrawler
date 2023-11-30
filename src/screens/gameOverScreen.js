@@ -37,36 +37,44 @@ const GameOverScreen = () => {
     }
 
     async function townScreen() {
-        let townMap = await getTownMap();
-        let character = await getNewCharacter();
-        let newCharacter =
-            character[Math.floor(Math.random() * character.length)];
-        let message = `The spirit of ${newCharacter.name.replaceAll(
-            "_",
-            " "
-        )} has entered the golem.<br>`;
-        let { stats } = newCharacter;
-        let { health, maxHealth, attack, defense, luck } = stats;
-        let statMessage = `Stats:<br>${health}/${maxHealth} HP<br>${attack} ATK<br>${defense} DEF<br>${luck} LCK`;
-        message += statMessage;
-        spiritMessage.current.innerHTML = message;
-        title.current.style.display = "none";
-        reincarnate.current.style.display = "none";
-        ghost.current.style.animation = "floatDown 1s ease-in-out forwards";
-        setTimeout(() => {
-            setContext((oldContext) => {
-                return {
-                    ...oldContext,
-                    map: townMap,
-                    screen: "map",
-                    character: newCharacter,
-                    score: 0,
-                    hand: [],
-                    deck: [],
-                };
-            });
-            stopRef.current.click();
-        }, 10000);
+        try {
+            spiritMessage.current.innerHTML = "Calling a spirit...";
+            title.current.style.display = "none";
+            reincarnate.current.style.display = "none";
+            let townMap = await getTownMap();
+            let character = await getNewCharacter();
+            let newCharacter =
+                character[Math.floor(Math.random() * character.length)];
+            let message = `The spirit of ${newCharacter.name.replaceAll(
+                "_",
+                " "
+            )} has entered the golem.<br>`;
+            let { stats } = newCharacter;
+            let { health, maxHealth, attack, defense, luck } = stats;
+            let statMessage = `Stats:<br>${health}/${maxHealth} HP<br>${attack} ATK<br>${defense} DEF<br>${luck} LCK`;
+            message += statMessage;
+            spiritMessage.current.innerHTML = message;
+            ghost.current.style.animation = "floatDown 1s ease-in-out forwards";
+            setTimeout(() => {
+                setContext((oldContext) => {
+                    return {
+                        ...oldContext,
+                        map: townMap,
+                        screen: "map",
+                        character: newCharacter,
+                        score: 0,
+                        hand: [],
+                        deck: [],
+                    };
+                });
+                stopRef.current.click();
+            }, 10000);
+        } catch (error) {
+            console.log(error);
+            spiritMessage.current.innerHTML = "No one answered?";
+            title.current.style.display = "block";
+            reincarnate.current.style.display = "block";
+        }
     }
 
     async function getTownMap() {
@@ -146,9 +154,7 @@ const GameOverScreen = () => {
     }, []);
 
     return (
-        <div
-            style={{ justifyContent: "flex-start !important" }}
-            className="menu-container">
+        <div style={{ justifyContent: "unset" }} className="menu-container">
             <div ref={stopRef}></div>
             <div className="title-container">Game Over</div>
             <div ref={ghost} className="ghost-container"></div>
