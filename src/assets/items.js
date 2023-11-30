@@ -1,6 +1,6 @@
-const items = {
+const ITEMS = {
     0: {
-        "Rabbit's Foot": {
+        Charm: {
             description: "A lucky charm. Increases luck by 1.",
             price: Math.floor(Math.random() * 25) + 25,
             params: {
@@ -21,13 +21,13 @@ const items = {
                 defense: 1,
             },
         },
-        "Torch": {
+        Torch: {
             description: "A Torch. Let's you see further in the dark.",
             price: Math.floor(Math.random() * 100) + 75,
         },
     },
     1: {
-        "Rabbit's Foot": {
+        Charm: {
             description: "A lucky charm. Increases luck by 1.",
             price: Math.floor(Math.random() * 25) + 25,
             params: {
@@ -69,32 +69,32 @@ const items = {
         },
     },
     2: {
-        "Rabbit's Foot": {
-            description: "A lucky charm. Increases luck by 1.",
+        Wand: {
+            description: "A magic wand. Increases luck by 2.",
             price: Math.floor(Math.random() * 50) + 75,
             params: {
-                luck: 1,
+                luck: 2,
             },
         },
-        "Rusty Sword": {
-            description: "A rusty sword. Increases attack by 1.",
+        "Iron Sword": {
+            description: "An iron sword. Increases attack by 2.",
             price: Math.floor(Math.random() * 50) + 75,
             params: {
-                attack: 1,
+                attack: 2,
             },
         },
-        "Rusty Shield": {
-            description: "A rusty shield. Increases defense by 1.",
+        "Iron Shield": {
+            description: "A iron shield. Increases defense by 2.",
             price: Math.floor(Math.random() * 50) + 75,
-            params: {
-                defense: 1,
-            },
-        },
-        "Rusty Armor": {
-            description: "Rusty armor. Increases defense by 2.",
-            price: Math.floor(Math.random() * 50) + 125,
             params: {
                 defense: 2,
+            },
+        },
+        "Iron Armor": {
+            description: "Rusty armor. Increases defense by 4.",
+            price: Math.floor(Math.random() * 50) + 125,
+            params: {
+                defense: 4,
             },
         },
         "Phoenix Plume": {
@@ -111,32 +111,32 @@ const items = {
         },
     },
     3: {
-        "Rabbit's Foot": {
-            description: "A lucky charm. Increases luck by 1.",
+        Wand: {
+            description: "A magic wand. Increases luck by 2.",
             price: Math.floor(Math.random() * 50) + 75,
             params: {
-                luck: 1,
+                luck: 2,
             },
         },
-        "Rusty Sword": {
-            description: "A rusty sword. Increases attack by 1.",
+        "Iron Sword": {
+            description: "An iron sword. Increases attack by 2.",
             price: Math.floor(Math.random() * 50) + 75,
             params: {
-                attack: 1,
+                attack: 2,
             },
         },
-        "Rusty Shield": {
-            description: "A rusty shield. Increases defense by 1.",
+        "Iron Shield": {
+            description: "A iron shield. Increases defense by 2.",
             price: Math.floor(Math.random() * 50) + 75,
-            params: {
-                defense: 1,
-            },
-        },
-        "Rusty Armor": {
-            description: "Rusty armor. Increases defense by 2.",
-            price: Math.floor(Math.random() * 50) + 125,
             params: {
                 defense: 2,
+            },
+        },
+        "Iron Armor": {
+            description: "Rusty armor. Increases defense by 4.",
+            price: Math.floor(Math.random() * 50) + 125,
+            params: {
+                defense: 4,
             },
         },
         "Phoenix Plume": {
@@ -153,32 +153,32 @@ const items = {
         },
     },
     4: {
-        "Rabbit's Foot": {
-            description: "A lucky charm. Increases luck by 1.",
+        Staff: {
+            description: "A magic staff. Increases luck by 3.",
             price: Math.floor(Math.random() * 50) + 75,
             params: {
-                luck: 1,
+                luck: 3,
             },
         },
-        "Rusty Sword": {
-            description: "A rusty sword. Increases attack by 1.",
+        "Steel Sword": {
+            description: "A steel sword. Increases attack by 3.",
             price: Math.floor(Math.random() * 50) + 75,
             params: {
-                attack: 1,
+                attack: 3,
             },
         },
-        "Rusty Shield": {
-            description: "A rusty shield. Increases defense by 1.",
+        "Steel Shield": {
+            description: "A steel shield. Increases defense by 3.",
             price: Math.floor(Math.random() * 50) + 75,
             params: {
-                defense: 1,
+                defense: 3,
             },
         },
-        "Rusty Armor": {
-            description: "Rusty armor. Increases defense by 2.",
+        "Steel Armor": {
+            description: "Rusty armor. Increases defense by 6.",
             price: Math.floor(Math.random() * 50) + 125,
             params: {
-                defense: 2,
+                defense: 6,
             },
         },
         "Phoenix Plume": {
@@ -195,32 +195,32 @@ const items = {
         },
     },
     5: {
-        "Rabbit's Foot": {
-            description: "A lucky charm. Increases luck by 1.",
+        Staff: {
+            description: "A magic staff. Increases luck by 3.",
             price: Math.floor(Math.random() * 50) + 75,
             params: {
-                luck: 1,
+                luck: 3,
             },
         },
-        "Rusty Sword": {
-            description: "A rusty sword. Increases attack by 1.",
+        "Steel Sword": {
+            description: "A steel sword. Increases attack by 3.",
             price: Math.floor(Math.random() * 50) + 75,
             params: {
-                attack: 1,
+                attack: 3,
             },
         },
-        "Rusty Shield": {
-            description: "A rusty shield. Increases defense by 1.",
+        "Steel Shield": {
+            description: "A steel shield. Increases defense by 3.",
             price: Math.floor(Math.random() * 50) + 75,
             params: {
-                defense: 1,
+                defense: 3,
             },
         },
-        "Rusty Armor": {
-            description: "Rusty armor. Increases defense by 2.",
+        "Steel Armor": {
+            description: "Rusty armor. Increases defense by 6.",
             price: Math.floor(Math.random() * 50) + 125,
             params: {
-                defense: 2,
+                defense: 6,
             },
         },
         "Phoenix Plume": {
@@ -237,32 +237,32 @@ const items = {
         },
     },
     6: {
-        "Rabbit's Foot": {
-            description: "A lucky charm. Increases luck by 1.",
+        Staff: {
+            description: "A magic staff. Increases luck by 3.",
             price: Math.floor(Math.random() * 50) + 75,
             params: {
-                luck: 1,
+                luck: 3,
             },
         },
-        "Rusty Sword": {
-            description: "A rusty sword. Increases attack by 1.",
+        "Steel Sword": {
+            description: "A steel sword. Increases attack by 3.",
             price: Math.floor(Math.random() * 50) + 75,
             params: {
-                attack: 1,
+                attack: 3,
             },
         },
-        "Rusty Shield": {
-            description: "A rusty shield. Increases defense by 1.",
+        "Steel Shield": {
+            description: "A steel shield. Increases defense by 3.",
             price: Math.floor(Math.random() * 50) + 75,
             params: {
-                defense: 1,
+                defense: 3,
             },
         },
-        "Rusty Armor": {
-            description: "Rusty armor. Increases defense by 2.",
+        "Steel Armor": {
+            description: "Steel armor. Increases defense by 6.",
             price: Math.floor(Math.random() * 50) + 125,
             params: {
-                defense: 2,
+                defense: 6,
             },
         },
         "Phoenix Plume": {
@@ -279,32 +279,32 @@ const items = {
         },
     },
     7: {
-        "Rabbit's Foot": {
-            description: "A lucky charm. Increases luck by 1.",
+        Grimoire: {
+            description: "A magic staff. Increases luck by 4.",
             price: Math.floor(Math.random() * 50) + 75,
             params: {
-                luck: 1,
+                luck: 4,
             },
         },
-        "Rusty Sword": {
-            description: "A rusty sword. Increases attack by 1.",
+        "Silver Sword": {
+            description: "A silver sword. Increases attack by 4.",
             price: Math.floor(Math.random() * 50) + 75,
             params: {
-                attack: 1,
+                attack: 4,
             },
         },
-        "Rusty Shield": {
-            description: "A rusty shield. Increases defense by 1.",
+        "Silver Shield": {
+            description: "A silver shield. Increases defense by 3.",
             price: Math.floor(Math.random() * 50) + 75,
             params: {
-                defense: 1,
+                defense: 4,
             },
         },
-        "Rusty Armor": {
-            description: "Rusty armor. Increases defense by 2.",
+        "Silver Armor": {
+            description: "Silver armor. Increases defense by 8.",
             price: Math.floor(Math.random() * 50) + 125,
             params: {
-                defense: 2,
+                defense: 8,
             },
         },
         "Phoenix Plume": {
@@ -321,32 +321,32 @@ const items = {
         },
     },
     8: {
-        "Rabbit's Foot": {
-            description: "A lucky charm. Increases luck by 1.",
+        Grimoire: {
+            description: "A magic staff. Increases luck by 4.",
             price: Math.floor(Math.random() * 50) + 75,
             params: {
-                luck: 1,
+                luck: 4,
             },
         },
-        "Rusty Sword": {
-            description: "A rusty sword. Increases attack by 1.",
+        "Silver Sword": {
+            description: "A silver sword. Increases attack by 4.",
             price: Math.floor(Math.random() * 50) + 75,
             params: {
-                attack: 1,
+                attack: 4,
             },
         },
-        "Rusty Shield": {
-            description: "A rusty shield. Increases defense by 1.",
+        "Silver Shield": {
+            description: "A silver shield. Increases defense by 4.",
             price: Math.floor(Math.random() * 50) + 75,
             params: {
-                defense: 1,
+                defense: 4,
             },
         },
-        "Rusty Armor": {
-            description: "Rusty armor. Increases defense by 2.",
+        "Silver Armor": {
+            description: "Silver armor. Increases defense by 8.",
             price: Math.floor(Math.random() * 50) + 125,
             params: {
-                defense: 2,
+                defense: 8,
             },
         },
         "Phoenix Plume": {
@@ -363,32 +363,32 @@ const items = {
         },
     },
     9: {
-        "Rabbit's Foot": {
-            description: "A lucky charm. Increases luck by 1.",
+        Grimoire: {
+            description: "A magic staff. Increases luck by 4.",
             price: Math.floor(Math.random() * 50) + 75,
             params: {
-                luck: 1,
+                luck: 4,
             },
         },
-        "Rusty Sword": {
-            description: "A rusty sword. Increases attack by 1.",
+        "Silver Sword": {
+            description: "A silver sword. Increases attack by 4.",
             price: Math.floor(Math.random() * 50) + 75,
             params: {
-                attack: 1,
+                attack: 4,
             },
         },
-        "Rusty Shield": {
-            description: "A rusty shield. Increases defense by 1.",
+        "Silver Shield": {
+            description: "A silver shield. Increases defense by 4.",
             price: Math.floor(Math.random() * 50) + 75,
             params: {
-                defense: 1,
+                defense: 4,
             },
         },
-        "Rusty Armor": {
-            description: "Rusty armor. Increases defense by 2.",
+        "Silver Armor": {
+            description: "Silver armor. Increases defense by 8.",
             price: Math.floor(Math.random() * 50) + 125,
             params: {
-                defense: 2,
+                defense: 8,
             },
         },
         "Phoenix Plume": {
@@ -404,4 +404,6 @@ const items = {
             price: Math.floor(Math.random() * 100) + 75,
         },
     },
-}
+};
+
+export default ITEMS;
