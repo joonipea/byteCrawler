@@ -25,7 +25,7 @@ const StatusModal = ({ setParent }) => {
                 <div
                     key={key}
                     style={{
-                        backgroundImage: `url("./sprites/${item}.png")`,
+                        backgroundImage: `url("./sprites/${item.toLowerCase()}.png")`,
                     }}
                     className="item-sprite"></div>
             );
