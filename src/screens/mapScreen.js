@@ -449,7 +449,7 @@ const MapScreen = () => {
         const cardsNeeded = 5 - contextCopy.hand.length;
         for (let i = 0; i < cardsNeeded; i++) {
             const randomCard = pickCard(contextRef.current.character.level);
-            const stats = context.character.stats;
+            const stats = contextRef.current.character.stats;
             const cardProfeciencies = randomCard.stats;
             let damage = 0;
             for (let profeciency of cardProfeciencies) {
