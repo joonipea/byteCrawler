@@ -1,7 +1,7 @@
 import React, { useState, useRef, useContext } from "react";
 import { AppContext } from "../../appContext";
 import ITEMS from "../../assets/items";
-import { addItem, changeStat } from "../../hooks/stats";
+import { addItem, removeItem, changeStat } from "../../hooks/stats";
 
 const CheatMenu = ({ setParent, bindControls }) => {
     const [context, setContext] = useContext(AppContext);
@@ -57,15 +57,6 @@ const CheatMenu = ({ setParent, bindControls }) => {
         let value = ITEMS[n][item].params[stat];
         addItem(setContext, item);
         changeStat(setContext, stat, context.character.stats[stat] + value);
-        setContext((oldContext) => {
-            return {
-                ...oldContext,
-                character: {
-                    ...oldContext.character,
-                    inventory: [...oldContext.character.inventory, item],
-                },
-            };
-        });
         return `added ${item} to your inventory`;
     }
 
@@ -74,38 +65,22 @@ const CheatMenu = ({ setParent, bindControls }) => {
         if (!context.character.inventory.includes(item)) {
             return `${item} not in your inventory`;
         }
-        return removeItem(item);
+        return unequip(item);
     }
 
-    function removeItem(item) {
-        setContext((oldContext) => {
-            return {
-                ...oldContext,
-                character: {
-                    ...oldContext.character,
-                    inventory: oldContext.character.inventory.filter(
-                        (i) => i != item
-                    ),
-                },
-            };
-        });
+    function unequip(item) {
+        const n = checkItems(item);
+        if (n == undefined) return `${item} not found`;
+        let [stat] = Object.keys(ITEMS[n][item].params);
+        let value = ITEMS[n][item].params[stat];
+        changeStat(setContext, stat, context.character.stats[stat] - value);
+        removeItem(setContext, context.character.inventory.indexOf(item));
         return `removed ${item} from your inventory`;
     }
 
     function setStat(stat, value) {
         if (isNaN(value)) return "invalid value";
-        setContext((oldContext) => {
-            return {
-                ...oldContext,
-                character: {
-                    ...oldContext.character,
-                    stats: {
-                        ...oldContext.character.stats,
-                        [stat]: value,
-                    },
-                },
-            };
-        });
+        changeStat(setContext, stat, value);
         return `set ${stat} to ${value}`;
     }
 
