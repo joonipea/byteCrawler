@@ -62,6 +62,7 @@ const GameOverScreen = () => {
                     character: newCharacter,
                     score: 0,
                     hand: [],
+                    deck: [],
                 };
             });
             stopRef.current.click();
