@@ -12,6 +12,9 @@ import LoadingScreen from "./loadingScreen";
 import DialogScreen from "./dialogScreen";
 import PauseScreen from "./pauseScreen";
 import CARDS from "../assets/cards.json";
+import CheatMenu from "./subScreens/cheatMenu";
+import { changeGold, changeScore, changeStat } from "../hooks/stats";
+import { cacheItem } from "../hooks/cache";
 
 const MapScreen = () => {
     const [context, setContext] = useContext(AppContext);
@@ -78,6 +81,15 @@ const MapScreen = () => {
                         bindControls={bindControls}
                         setParent={setDialogScreen}></PauseScreen>
                 );
+                break;
+            case "`":
+                unBindControls();
+                setDialogScreen(
+                    <CheatMenu
+                        bindControls={bindControls}
+                        setParent={setDialogScreen}></CheatMenu>
+                );
+                break;
             default:
                 break;
         }
@@ -200,15 +212,7 @@ const MapScreen = () => {
             } else {
                 getItemPrice(context.worldName, nextCell.classList[1]).then(
                     (item) => {
-                        setContext((oldContext) => {
-                            return {
-                                ...oldContext,
-                                codex: {
-                                    ...oldContext.codex,
-                                    [item.id]: item,
-                                },
-                            };
-                        });
+                        cacheItem(setContext, item);
                         setGold((oldGold) => oldGold + item.price);
                         nextCell.classList.remove(nextCell.classList[1]);
                         nextCell.classList.add("open-chest");
@@ -218,18 +222,11 @@ const MapScreen = () => {
         }
         if (nextCell.classList.contains("well")) {
             //heal the player
-            setContext((oldContext) => {
-                return {
-                    ...oldContext,
-                    character: {
-                        ...oldContext.character,
-                        stats: {
-                            ...oldContext.character.stats,
-                            health: oldContext.character.stats.maxHealth,
-                        },
-                    },
-                };
-            });
+            changeStat(
+                setContext,
+                "health",
+                contextRef.current.character.stats.maxHealth
+            );
         }
 
         if (nextCell.classList.contains("dungeon")) {
@@ -298,17 +295,22 @@ const MapScreen = () => {
             x: playerBounds.x - mapBounds.x + playerBounds.width / 2,
             y: playerBounds.y - mapBounds.y + playerBounds.height / 2,
         };
-        const circleRadius =
-            contextCopy.character.inventory &&
-            contextCopy.character.inventory.includes("Oil Lamp")
-                ? 5
-                : 3;
+
+        const circleRadius = getCirlceRadius();
         map.style.clipPath = `circle(calc(75 / 21 * ${circleRadius}lvmin - 2px) at ${
             playerCenter.x / 1.5
         }px ${playerCenter.y / 1.5}px)`;
         map.style.transformOrigin = `${playerCenter.x / 1.5}px ${
             playerCenter.y / 1.5
         }px`;
+    }
+
+    function getCirlceRadius() {
+        const contextCopy = contextRef.current;
+        if (!contextCopy.character.inventory) return 3;
+        if (contextCopy.character.inventory.includes("Oil Lamp")) return 5;
+        if (contextCopy.character.inventory.includes("Torch")) return 4;
+        return 3;
     }
 
     const nextMap = useCallback(() => {
@@ -481,12 +483,7 @@ const MapScreen = () => {
     useEffect(() => {
         if (score <= 0) return;
 
-        setContext((oldContext) => {
-            return {
-                ...oldContext,
-                score: score,
-            };
-        });
+        changeScore(setContext, score);
 
         if (
             score >=
@@ -508,12 +505,7 @@ const MapScreen = () => {
     useEffect(() => {
         if (gold <= 0) return;
 
-        setContext((oldContext) => {
-            return {
-                ...oldContext,
-                gold: gold,
-            };
-        });
+        changeGold(setContext, gold);
     }, [gold]);
 
     useEffect(() => {

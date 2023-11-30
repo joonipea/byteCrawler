@@ -1,52 +1,17 @@
 import React, { useState, useContext } from "react";
 import { AppContext } from "../../appContext";
 import MerchantStock from "./sub dialogs/merchantStock";
+import ITEMS from "../../assets/items";
+import { addItem, changeGold, changeStat } from "../../hooks/stats";
 
 const Merchant = () => {
     const [context, setContext] = useContext(AppContext);
 
-    const items = {
-        "Rabbit's Foot": {
-            description: "A lucky charm. Increases luck by 1.",
-            price: Math.floor(Math.random() * 50) + 75,
-            params: {
-                luck: 1,
-            },
-        },
-        "Rusty Sword": {
-            description: "A rusty sword. Increases attack by 1.",
-            price: Math.floor(Math.random() * 50) + 75,
-            params: {
-                attack: 1,
-            },
-        },
-        "Rusty Shield": {
-            description: "A rusty shield. Increases defense by 1.",
-            price: Math.floor(Math.random() * 50) + 75,
-            params: {
-                defense: 1,
-            },
-        },
-        "Rusty Armor": {
-            description: "Rusty armor. Increases defense by 2.",
-            price: Math.floor(Math.random() * 50) + 125,
-            params: {
-                defense: 2,
-            },
-        },
-        "Phoenix Plume": {
-            description: "A phoenix plume. Allows you to revive once.",
-            price: Math.floor(Math.random() * 100) + 75,
-        },
-        "Cracked Wise Glasses": {
-            description: "Wise glasses. Let's you learn more from encounters.",
-            price: Math.floor(Math.random() * 100) + 75,
-        },
-        "Oil Lamp": {
-            description: "An oil lamp. Let's you see further in the dark.",
-            price: Math.floor(Math.random() * 100) + 75,
-        },
-    };
+    const merchantLevel =
+        Math.floor(context.maps.length / 10) < 10
+            ? Math.floor(context.maps.length / 10)
+            : 9;
+    const items = ITEMS[merchantLevel];
 
     function showInventory() {
         setInnerText(
@@ -83,40 +48,19 @@ const Merchant = () => {
         if (context.gold >= items[item].price) {
             switch (items[item].params) {
                 case undefined:
-                    setContext((oldContext) => {
-                        return {
-                            ...oldContext,
-                            gold: oldContext.gold - items[item].price,
-                            character: {
-                                ...oldContext.character,
-                                inventory: oldContext.character.inventory
-                                    ? [...oldContext.character.inventory, item]
-                                    : [item],
-                            },
-                        };
-                    });
+                    addItem(setContext, item);
+                    changeGold(setContext, context.gold - items[item].price);
                     break;
                 default:
                     let [stat] = Object.keys(items[item].params);
                     let value = items[item].params[stat];
-                    setContext((oldContext) => {
-                        return {
-                            ...oldContext,
-                            gold: oldContext.gold - items[item].price,
-                            character: {
-                                ...oldContext.character,
-                                inventory: oldContext.character.inventory
-                                    ? [...oldContext.character.inventory, item]
-                                    : [item],
-                                stats: {
-                                    ...oldContext.character.stats,
-                                    [stat]:
-                                        oldContext.character.stats[stat] +
-                                        value,
-                                },
-                            },
-                        };
-                    });
+                    changeGold(setContext, context.gold - items[item].price);
+                    addItem(setContext, item);
+                    changeStat(
+                        setContext,
+                        stat,
+                        context.character.stats[stat] + value
+                    );
                     break;
             }
 

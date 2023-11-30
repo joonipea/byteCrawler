@@ -8,6 +8,8 @@ import React, {
 import { AppContext } from "../appContext";
 import Hand from "./dialogs/hand";
 import CARDS from "../assets/cards.json";
+import { cacheMob } from "../hooks/cache";
+import { changeStat, removeItem } from "../hooks/stats";
 
 const BattleScreen = ({
     mob,
@@ -63,15 +65,7 @@ const BattleScreen = ({
         })
             .then((res) => res.json())
             .then((data) => {
-                setContext((oldContext) => {
-                    return {
-                        ...oldContext,
-                        bestiary: {
-                            ...oldContext.bestiary,
-                            [data[0].name]: data[0],
-                        },
-                    };
-                });
+                cacheMob(setContext, data[0]);
                 setMobData(data[0]);
                 setMobHealth(data[0].stats.health);
                 setMobMaxHealth(data[0].stats.maxHealth);
@@ -93,18 +87,7 @@ const BattleScreen = ({
                 0
             );
         }
-        setContext((oldContext) => {
-            return {
-                ...oldContext,
-                character: {
-                    ...oldContext.character,
-                    stats: {
-                        ...oldContext.character.stats,
-                        health: newHealth,
-                    },
-                },
-            };
-        });
+        changeStat(setContext, "health", newHealth);
     }
 
     function calcDamage(luck, attack) {
@@ -368,21 +351,8 @@ const BattleScreen = ({
             context.character.inventory &&
             context.character.inventory.includes("Phoenix Plume")
         ) {
-            setContext((oldContext) => {
-                return {
-                    ...oldContext,
-                    character: {
-                        ...oldContext.character,
-                        inventory: oldContext.character.inventory.filter(
-                            (item) => item !== "Phoenix Plume"
-                        ),
-                        stats: {
-                            ...oldContext.character.stats,
-                            health: oldContext.character.stats.maxHealth,
-                        },
-                    },
-                };
-            });
+            removeItem(setContext, "Phoenix Plume");
+            changeStat(setContext, "health", context.character.stats.maxHealth);
             return;
         }
         if (context.character.stats.health <= 0) {
