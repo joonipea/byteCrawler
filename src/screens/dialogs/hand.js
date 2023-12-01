@@ -28,7 +28,6 @@ const Hand = forwardRef(function Hand({ stats, level, handleCards }, ref) {
         const availableCards = getAvailableCards();
 
         const cardNames = availableCards.map((card) => card.key);
-        console.log(availableCards);
         const randomCard =
             CARDS[cardNames[Math.floor(Math.random() * cardNames.length)]];
         if (randomCard.level <= level) return randomCard;

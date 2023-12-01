@@ -37,7 +37,6 @@ const CheatMenu = ({ setParent, bindControls }) => {
     function handleAdd(args) {
         const item = args[0].replaceAll("_", " ");
         if (!context.character.inventory.includes(item)) {
-            console.log(item);
             return equip(item);
         }
         return `${item} already in your inventory`;

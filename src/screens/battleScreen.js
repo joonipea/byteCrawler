@@ -49,7 +49,6 @@ const BattleScreen = ({
 
     useEffect(() => {
         const mName = mob.split(":")[1];
-        console.log(context.bestiary);
         if (context.bestiary[mName]) {
             setMobData(context.bestiary[mName]);
             setMobHealth(context.bestiary[mName].stats.health);
@@ -230,7 +229,6 @@ const BattleScreen = ({
             )} for ${damage} damage.`
         );
         if (contextRef.current.character.stats.health - damage <= 0) return;
-        console.log("turn changed");
         setTurn(0);
         handRef.current.style.transform = "none";
     }
@@ -238,21 +236,21 @@ const BattleScreen = ({
     useEffect(() => {
         if (turn === 0) return;
         handRef.current.style.transform = "translateX(100vw)";
-        if (mobHealth <= 0) return;        
+        if (mobHealth <= 0) return;
         setTimeout(() => {
             attackPlayer(mobDataRef.current);
-        }, 1000);     
+        }, 1000);
     }, [turn]);
-    
+
     useEffect(() => {
-      if (!mobData.stats) {
-        handRef.current.style.transform = "translateX(100vw)";
-        return;
-      }
-      if (turn === 0) {
-        handRef.current.style.transform = "none";
-      }
-    }, [mobData.stats])
+        if (!mobData.stats) {
+            handRef.current.style.transform = "translateX(100vw)";
+            return;
+        }
+        if (turn === 0) {
+            handRef.current.style.transform = "none";
+        }
+    }, [mobData.stats]);
 
     function damageText(ref, damage, color) {
         ref.current.innerText = damage * -1;

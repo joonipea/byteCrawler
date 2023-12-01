@@ -437,7 +437,6 @@ const MapScreen = () => {
     function pickCard(level) {
         const availableCards = getAvailableCards();
         const cardNames = availableCards.map((card) => card.key);
-        console.log(cardNames);
         const randomCard =
             CARDS[cardNames[Math.floor(Math.random() * cardNames.length)]];
         if (randomCard.level <= level) return randomCard;
