@@ -167,7 +167,6 @@ const BattleScreen = ({
                 addToHand(newCard);
             }
         }
-        setTurn(1);
     }
 
     function drawCard(card) {
@@ -176,7 +175,6 @@ const BattleScreen = ({
             const randomCard = pickCard(context.character.level);
             addToHand(randomCard.key);
         }
-        setTurn(1);
     }
 
     const pickCard = (level) => {
