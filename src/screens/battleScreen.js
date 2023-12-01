@@ -228,7 +228,8 @@ const BattleScreen = ({
                 " "
             )} for ${damage} damage.`
         );
-        if (context.character.stats.health <= 0) return;
+        if (contextRef.current.character.stats.health - damage <= 0) return;
+        console.log("turn changed");
         setTurn(0);
         handRef.current.style.transform = "none";
     }
@@ -416,6 +417,7 @@ const BattleScreen = ({
 
         request.send();
     }, []);
+
     const colors = {
         green: "136deg) brightness(3",
         red: "0deg",
