@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useRef } from "react";
 import { AppContext } from "../appContext";
 const hints = [
-    "If you find yourself dying a lot, your character might be too weak. Try starting a new game with the same name.",
     "Enemies will only follow you if they're within 3 tiles of you.",
     "Yellow tiles are save points. Use them.",
     "If you're low health. Run.",
@@ -14,14 +13,15 @@ const hints = [
     "Some characters level up faster than others.",
     "Some characters are stronger than others.",
     "Characters that start stronger level up slower.",
-    "Luck handles more than just critical hits.",
-    "Luck determines damage range.",
-    "Luck determines battle order.",
 ];
 
 const GameOverScreen = () => {
     const [context, setContext] = useContext(AppContext);
     const stopRef = useRef();
+    const spiritMessage = useRef();
+    const reincarnate = useRef();
+    const title = useRef();
+    const ghost = useRef();
 
     function startScreen() {
         window.location.reload();
@@ -37,20 +37,44 @@ const GameOverScreen = () => {
     }
 
     async function townScreen() {
-        let townMap = await getTownMap();
-        let character = await getNewCharacter();
-        let newCharacter =
-            character[Math.floor(Math.random() * character.length)];
-        setContext((oldContext) => {
-            return {
-                ...oldContext,
-                map: townMap,
-                screen: "map",
-                character: newCharacter,
-                score: 0,
-            };
-        });
-        stopRef.current.click();
+        try {
+            spiritMessage.current.innerHTML = "Calling a spirit...";
+            title.current.style.display = "none";
+            reincarnate.current.style.display = "none";
+            let townMap = await getTownMap();
+            let character = await getNewCharacter();
+            let newCharacter =
+                character[Math.floor(Math.random() * character.length)];
+            let message = `The spirit of ${newCharacter.name.replaceAll(
+                "_",
+                " "
+            )} has entered the golem.<br>`;
+            let { stats } = newCharacter;
+            let { health, maxHealth, attack, defense, luck } = stats;
+            let statMessage = `Stats:<br>${health}/${maxHealth} HP<br>${attack} ATK<br>${defense} DEF<br>${luck} LCK`;
+            message += statMessage;
+            spiritMessage.current.innerHTML = message;
+            ghost.current.style.animation = "floatDown 1s ease-in-out forwards";
+            setTimeout(() => {
+                setContext((oldContext) => {
+                    return {
+                        ...oldContext,
+                        map: townMap,
+                        screen: "map",
+                        character: newCharacter,
+                        score: 0,
+                        hand: [],
+                        deck: [],
+                    };
+                });
+                stopRef.current.click();
+            }, 10000);
+        } catch (error) {
+            console.log(error);
+            spiritMessage.current.innerHTML = "No one answered?";
+            title.current.style.display = "block";
+            reincarnate.current.style.display = "block";
+        }
     }
 
     async function getTownMap() {
@@ -130,17 +154,25 @@ const GameOverScreen = () => {
     }, []);
 
     return (
-        <div className="menu-container">
+        <div style={{ justifyContent: "unset" }} className="menu-container">
             <div ref={stopRef}></div>
             <div className="title-container">Game Over</div>
+            <div ref={ghost} className="ghost-container"></div>
+            <div className="art-container--gameover"></div>
+            <p
+                style={{ textAlign: "center", width: "75%" }}
+                ref={spiritMessage}></p>
             <p style={{ textAlign: "center", width: "75%" }}>
                 Hint: {hints[Math.floor(Math.random() * hints.length)]}
             </p>
-            <button onClick={() => startScreen()} className="btn">
-                Return to title
+            <button
+                ref={reincarnate}
+                onClick={() => townScreen()}
+                className="btn">
+                Reincarnate
             </button>
-            <button onClick={() => townScreen()} className="btn">
-                Return to town
+            <button ref={title} onClick={() => startScreen()} className="btn">
+                Return to title
             </button>
         </div>
     );

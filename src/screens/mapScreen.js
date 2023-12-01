@@ -11,6 +11,10 @@ import LevelUpScreen from "./levelUpScreen";
 import LoadingScreen from "./loadingScreen";
 import DialogScreen from "./dialogScreen";
 import PauseScreen from "./pauseScreen";
+import CARDS from "../assets/cards.json";
+import CheatMenu from "./subScreens/cheatMenu";
+import { changeGold, changeScore, changeStat } from "../hooks/stats";
+import { cacheItem } from "../hooks/cache";
 
 const MapScreen = () => {
     const [context, setContext] = useContext(AppContext);
@@ -27,6 +31,14 @@ const MapScreen = () => {
     const stopRef = useRef(null);
     contextRef.current = context;
     var audio_context;
+
+    function getAvailableCards() {
+        if (contextRef.current.deck && contextRef.current.deck.length > 0) {
+            return contextRef.current.deck;
+        }
+        const cards = Object.values(CARDS);
+        return cards.filter((card) => card.level <= context.character.level);
+    }
 
     function createMap(data) {
         const container = document.getElementById("map");
@@ -69,6 +81,15 @@ const MapScreen = () => {
                         bindControls={bindControls}
                         setParent={setDialogScreen}></PauseScreen>
                 );
+                break;
+            case "`":
+                unBindControls();
+                setDialogScreen(
+                    <CheatMenu
+                        bindControls={bindControls}
+                        setParent={setDialogScreen}></CheatMenu>
+                );
+                break;
             default:
                 break;
         }
@@ -140,6 +161,7 @@ const MapScreen = () => {
             unBindControls();
             setLoadingScreen(<LoadingScreen></LoadingScreen>);
             nextMap();
+            resetHand();
         }
         if (isTomb(nextCell)) {
             unBindControls();
@@ -182,44 +204,29 @@ const MapScreen = () => {
             );
         }
         if (isItem(nextCell)) {
-            const iName = nextCell.classList[1];
+            const iName = nextCell.classList[1].split(":")[1];
             if (context.codex[iName]) {
                 setGold((oldGold) => oldGold + context.codex[iName].price);
                 nextCell.classList.remove(nextCell.classList[1]);
-                nextCell.classList.add("floor");
+                nextCell.classList.add("open-chest");
             } else {
                 getItemPrice(context.worldName, nextCell.classList[1]).then(
                     (item) => {
-                        setContext((oldContext) => {
-                            return {
-                                ...oldContext,
-                                codex: {
-                                    ...oldContext.codex,
-                                    [item.id]: item,
-                                },
-                            };
-                        });
+                        cacheItem(setContext, item);
                         setGold((oldGold) => oldGold + item.price);
                         nextCell.classList.remove(nextCell.classList[1]);
-                        nextCell.classList.add("floor");
+                        nextCell.classList.add("open-chest");
                     }
                 );
             }
         }
         if (nextCell.classList.contains("well")) {
             //heal the player
-            setContext((oldContext) => {
-                return {
-                    ...oldContext,
-                    character: {
-                        ...oldContext.character,
-                        stats: {
-                            ...oldContext.character.stats,
-                            health: oldContext.character.stats.maxHealth,
-                        },
-                    },
-                };
-            });
+            changeStat(
+                setContext,
+                "health",
+                contextRef.current.character.stats.maxHealth
+            );
         }
 
         if (nextCell.classList.contains("dungeon")) {
@@ -288,17 +295,22 @@ const MapScreen = () => {
             x: playerBounds.x - mapBounds.x + playerBounds.width / 2,
             y: playerBounds.y - mapBounds.y + playerBounds.height / 2,
         };
-        const circleRadius =
-            contextCopy.character.inventory &&
-            contextCopy.character.inventory.includes("Oil Lamp")
-                ? 5
-                : 3;
+
+        const circleRadius = getCirlceRadius();
         map.style.clipPath = `circle(calc(75 / 21 * ${circleRadius}lvmin - 2px) at ${
             playerCenter.x / 1.5
         }px ${playerCenter.y / 1.5}px)`;
         map.style.transformOrigin = `${playerCenter.x / 1.5}px ${
             playerCenter.y / 1.5
         }px`;
+    }
+
+    function getCirlceRadius() {
+        const contextCopy = contextRef.current;
+        if (!contextCopy.character.inventory) return 3;
+        if (contextCopy.character.inventory.includes("Oil Lamp")) return 5;
+        if (contextCopy.character.inventory.includes("Torch")) return 4;
+        return 3;
     }
 
     const nextMap = useCallback(() => {
@@ -335,7 +347,6 @@ const MapScreen = () => {
 
     //save the game using up to date context
     const saveGame = useCallback(() => {
-        console.log("game saved");
         let contextCopy = contextRef.current;
         localStorage.setItem("saveData", JSON.stringify(contextCopy));
     }, [context]);
@@ -423,35 +434,78 @@ const MapScreen = () => {
         }
     }, [tick]);
 
-    useEffect(() => {
-        if (score <= 0) return;
+    function pickCard(level) {
+        const availableCards = getAvailableCards();
+        const cardNames = availableCards.map((card) => card.key);
+        console.log(cardNames);
+        const randomCard =
+            CARDS[cardNames[Math.floor(Math.random() * cardNames.length)]];
+        if (randomCard.level <= level) return randomCard;
+        return pickCard(level);
+    }
 
+    function resetHand() {
+        const contextCopy = contextRef.current;
+        const cardsNeeded = 5 - contextCopy.hand.length;
+        for (let i = 0; i < cardsNeeded; i++) {
+            const randomCard = pickCard(contextRef.current.character.level);
+            const stats = contextRef.current.character.stats;
+            const cardProfeciencies = randomCard.stats;
+            let damage = 0;
+            for (let profeciency of cardProfeciencies) {
+                damage += Math.ceil(stats[profeciency[0]] * profeciency[1]);
+            }
+            randomCard.damage = damage;
+            addToHand(randomCard);
+        }
+    }
+
+    function addToHand(card) {
+        const contextCopy = contextRef.current;
+        if (!contextCopy.hand) {
+            setContext((oldContext) => {
+                return {
+                    ...oldContext,
+                    hand: [card],
+                };
+            });
+            return;
+        }
         setContext((oldContext) => {
             return {
                 ...oldContext,
-                score: score,
+                hand: [...oldContext.hand, card],
             };
         });
+        return;
+    }
+
+    useEffect(() => {
+        if (score <= 0) return;
+
+        changeScore(setContext, score);
 
         if (
             score >=
-            context.character.level ** 1.3 * context.character.rarity * 500
+            context.character.level ** 1.6 * context.character.rarity * 500
         ) {
-            setLevelUpScreen(
-                <LevelUpScreen setParent={setLevelUpScreen}></LevelUpScreen>
+            const level = context.character.level + 1;
+            const learnedCards = Object.values(CARDS).filter(
+                (c) => c.level == level
             );
+            setLevelUpScreen(
+                <LevelUpScreen
+                    learnedCards={learnedCards}
+                    setParent={setLevelUpScreen}></LevelUpScreen>
+            );
+            resetHand();
         }
     }, [score]);
 
     useEffect(() => {
         if (gold <= 0) return;
 
-        setContext((oldContext) => {
-            return {
-                ...oldContext,
-                gold: gold,
-            };
-        });
+        changeGold(setContext, gold);
     }, [gold]);
 
     useEffect(() => {
@@ -529,19 +583,65 @@ const MapScreen = () => {
         request.send();
     }, []);
 
+    const innerExpBar = () => {
+        const expNeeded = Math.floor(
+            context.character.level ** 1.6 * context.character.rarity * 500
+        );
+        const lastExpNeeded = Math.floor(
+            (context.character.level - 1) ** 1.6 *
+                context.character.rarity *
+                500
+        );
+        const currentPercent = Math.floor(
+            ((context.score - lastExpNeeded) / (expNeeded - lastExpNeeded)) *
+                100
+        );
+        if (isNaN(currentPercent)) return 0;
+        return currentPercent;
+    };
+
     return (
         <div>
+            <style>
+                {`
+                    .exp-bar {
+                        width: 50%;
+                        height: 24px;
+                        border: 2px solid #fff;
+                        overflow: hidden;
+                        margin: auto;
+                    }
+                    .inner-exp-bar {
+                        height: 100%;
+                        background-color: #fff;
+                        width: ${innerExpBar()}%;
+                        color: var(--background-color);
+                    }
+                    `}
+            </style>
             <div ref={stopRef}></div>
             {battleScreen}
             {loadingScreen}
             {levelUpScreen}
             {dialogScreen}
-            <p style={{ textAlign: "center" }}>
+            <div className="status-bar">
                 Floor {context.map.floor}: {context.map.name.replace(/_/g, " ")}{" "}
-                - Score: {context.score ? context.score : 0} - Gold:{" "}
-                {context.gold ? context.gold : 0}
-            </p>
+                <div className="exp-bar">
+                    <div className="inner-exp-bar">{innerExpBar()}%</div>
+                </div>
+                Gold: {context.gold ? context.gold : 0}
+            </div>
             <div ref={mapRef} id="map"></div>
+            <div
+                id="mobile-menu"
+                onClick={() => {
+                    unBindControls();
+                    setDialogScreen(
+                        <PauseScreen
+                            bindControls={bindControls}
+                            setParent={setDialogScreen}></PauseScreen>
+                    );
+                }}></div>
         </div>
     );
 };

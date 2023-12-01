@@ -8,49 +8,54 @@ const NewGameScreen = () => {
     const [context, setContext] = useContext(AppContext);
     const [name, setName] = useState("");
 
-    function createWorld(name) {
-        setLoadingScreen(<LoadingScreen></LoadingScreen>);
-        setLoading(true);
-        fetch(process.env.REACT_APP_MIDDLEWARE_URL + "/generateWorld", {
-            method: "GET",
-            headers: {
-                user: name,
-            },
-        })
-            .then(() => {
-                generateMap(name, setContext, context, 0).then((response) => {
-                    response.json().then((maps) => {
-                        getRecord(name, "chars").then((res) => {
-                            res.json().then((chars) => {
-                                const charIndex = Math.floor(
-                                    Math.random() * chars.length
-                                );
-                                console.log(chars[charIndex]);
-                                const newContext = {
-                                    ...context,
-                                    screen: "map",
-                                    maps: maps,
-                                    map: maps[0],
-                                    character: chars[charIndex],
-                                    worldName: name,
-                                    bestiary: {},
-                                    codex: {},
-                                };
-                                setContext(newContext);
-                                localStorage.setItem(
-                                    "saveData",
-                                    JSON.stringify(newContext)
-                                );
-                            });
-                        });
-                    });
-                });
-            })
-            .catch((error) => {
-                setLoadingScreen(<></>);
-                setLoading(false);
-                console.log(error);
-            });
+    async function createWorld(name) {
+        try {
+            setLoadingScreen(<LoadingScreen></LoadingScreen>);
+            setLoading(true);
+            const url = process.env.REACT_APP_MIDDLEWARE_URL + "/generateWorld";
+            const body = {
+                method: "GET",
+                headers: {
+                    user: name,
+                },
+            };
+            await fetch(url, body);
+            const response = await generateMap(name, setContext, context, 0);
+            const maps = await response.json();
+            const response_2 = await getRecord(name, "chars");
+            const chars = await response_2.json();
+            const response_3 = await getRecord(name, "mobs");
+            const mobs = await response_3.json();
+            const bestiary = {};
+            for (let mob of mobs) {
+                bestiary[mob.name] = mob;
+            }
+            const response_4 = await getRecord(name, "items");
+            const items = await response_4.json();
+            const codex = {};
+            for (let item of items) {
+                codex[item.name] = item;
+            }
+            const charIndex = Math.floor(Math.random() * chars.length);
+            const newContext = {
+                ...context,
+                screen: "map",
+                maps: maps,
+                map: maps[0],
+                character: chars[charIndex],
+                worldName: name,
+                bestiary: bestiary,
+                codex: codex,
+                hand: [],
+                deck: [],
+            };
+            setContext(newContext);
+            localStorage.setItem("saveData", JSON.stringify(newContext));
+        } catch (error) {
+            setLoadingScreen(<></>);
+            setLoading(false);
+            console.log(error);
+        }
     }
 
     return (

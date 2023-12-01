@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react";
 import { AppContext } from "../appContext";
 
-const LevelUpScreen = ({ setParent }) => {
+const LevelUpScreen = ({ setParent, learnedCards }) => {
     const [context, setContext] = useContext(AppContext);
-    const [statPoints, setStatPoints] = useState(context.character.level * 2);
+    const [statPoints, setStatPoints] = useState(4);
     const [currentStats, setCurrentStats] = useState({
         health: context.character.stats.health,
         maxHealth: context.character.stats.maxHealth,
@@ -102,6 +102,19 @@ const LevelUpScreen = ({ setParent }) => {
                     +
                 </button>
             </div>
+            <div>
+                <p>You Learned:</p>
+                <div className="learned-cards--container">
+                    {learnedCards.map((card, index) => {
+                        return (
+                            <div key={index} className="learned-card">
+                                <p>{card.name}</p>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+
             <button onClick={() => confirm()} className="btn">
                 Confirm
             </button>

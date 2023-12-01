@@ -8,7 +8,7 @@ const Temple = ({ setScore }) => {
 
     useEffect(() => {
         let expNeeded =
-            context.character.level ** 1.3 * context.character.rarity * 500;
+            context.character.level ** 1.6 * context.character.rarity * 500;
         let nextLevel = expNeeded - context.score;
         setGoldNeeded(Math.ceil(nextLevel / 5));
         setInnerText(
