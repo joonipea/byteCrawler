@@ -9,7 +9,7 @@ import NewGameScreen from "./screens/newGameScreen";
 import GameOverScreen from "./screens/gameOverScreen";
 import SettingsScreen from "./screens/settingsScreen";
 import CreditsScreen from "./screens/creditsScreen";
-
+import JukeBox from "./hooks/audio"
 const App = () => {
     const [context, setContext] = useContext(AppContext);
 
@@ -21,6 +21,7 @@ const App = () => {
 
     return (
         <>
+            <JukeBox />
             {context.screen === "start" && <StartScreen></StartScreen>}
             {context.screen === "new" && <NewGameScreen></NewGameScreen>}
             {context.screen === "pull" && <PullScreen></PullScreen>}

@@ -305,10 +305,14 @@ const BattleScreen = ({
         setTimeout(() => {
             cell.classList.remove(mob);
             cell.classList.add("floor");
-            stopRef.current.click();
-            mapMusic.click();
             bindControls();
             setParent([]);
+            setContext((oldContext) => {
+                return {
+                    ...oldContext,
+                    url: "./music/map.wav",
+                };
+            });
         }, 2000);
     }
 
@@ -370,6 +374,7 @@ const BattleScreen = ({
                     return {
                         ...oldContext,
                         screen: "gameover",
+                        stopMusic: true,
                     };
                 });
             }, 1000);
@@ -377,7 +382,6 @@ const BattleScreen = ({
     }, [context.character.stats.health]);
 
     useEffect(() => {
-        mapMusic.click();
         const audio = new Audio();
         let url;
         if (audio.canPlayType("audio/ogg; codecs=vorbis") === "probably") {
@@ -385,43 +389,12 @@ const BattleScreen = ({
         } else {
             url = "./music/FIGHT_REPRISE.wav";
         }
-
-        audio_context = new AudioContext();
-
-        var source = audio_context.createBufferSource();
-
-        const gainNode = audio_context.createGain();
-
-        gainNode.gain.value = context.volume / 100;
-        gainNode.connect(audio_context.destination);
-        source.connect(gainNode);
-
-        var request = new XMLHttpRequest();
-
-        request.open("GET", url, true);
-
-        request.responseType = "arraybuffer";
-
-        request.onload = function () {
-            audio_context.decodeAudioData(
-                request.response,
-                function (response) {
-                    source.buffer = response;
-
-                    source.start(0);
-                    source.loop = true;
-                },
-                function () {
-                    console.error("The request failed.");
-                }
-            );
-        };
-        stopRef.current.addEventListener("click", () => {
-            source.stop();
-            audio_context.close();
+        setContext((oldContext) => {
+            return {
+                ...oldContext,
+                url: url,
+            };
         });
-
-        request.send();
     }, []);
 
     const colors = {

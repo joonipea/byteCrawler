@@ -531,55 +531,12 @@ const MapScreen = () => {
     }, [nextFloor]);
 
     useEffect(() => {
-        //this is the webaudio loooooppppppp
-        //enter url in the next line
-        var url = "./music/map.wav";
-
-        /* --- set up web audio --- */
-        //create the context
-        audio_context = new AudioContext();
-
-        //...and the source
-        var source = audio_context.createBufferSource();
-        //connect it to the destination so you can hear it.
-        const gainNode = audio_context.createGain();
-
-        gainNode.gain.value = context.volume / 100;
-        gainNode.connect(audio_context.destination);
-        source.connect(gainNode);
-        /* --- load buffer ---  */
-        var request = new XMLHttpRequest();
-        //open the request
-        request.open("GET", url, true);
-        //webaudio paramaters
-        request.responseType = "arraybuffer";
-        //Once the request has completed... do this
-        request.onload = function () {
-            audio_context.decodeAudioData(
-                request.response,
-                function (response) {
-                    /* --- play the sound AFTER the buffer loaded --- */
-                    //set the buffer to the response we just received.
-                    source.buffer = response;
-                    //start(0) should play asap.
-                    source.start(0);
-                    source.loop = true;
-                },
-                function () {
-                    console.error("The request failed.");
-                }
-            );
-        };
-
-        stopRef.current.addEventListener("click", () => {
-            if (audio_context.state === "suspended") {
-                audio_context.resume();
-            } else {
-                audio_context.suspend();
-            }
+        setContext((oldContext) => {
+            return {
+                ...oldContext,
+                url: "./music/map.wav",
+            };
         });
-        //Now that the request has been defined, actually make the request. (send it)
-        request.send();
     }, []);
 
     const innerExpBar = () => {

@@ -112,44 +112,19 @@ const GameOverScreen = () => {
     }
 
     useEffect(() => {
-        var url = "./music/GAME OVER.wav";
-        let audio_context = new AudioContext();
-        var source = audio_context.createBufferSource();
-        const gainNode = audio_context.createGain();
-
-        gainNode.gain.value = context.volume / 100;
-        gainNode.connect(audio_context.destination);
-        source.connect(gainNode);
-        var request = new XMLHttpRequest();
-
-        request.open("GET", url, true);
-        request.responseType = "arraybuffer";
-        request.onload = function () {
-            audio_context.decodeAudioData(
-                request.response,
-                function (response) {
-                    source.buffer = response;
-                    source.start(0);
-                    source.loop = true;
-                },
-                function () {
-                    console.error("The request failed.");
-                }
-            );
-        };
-
         let deadChime = new Audio("./music/DEAD.wav");
         deadChime.addEventListener("canplaythrough", (event) => {
             deadChime.volume = context.volume / 100;
             deadChime.play();
             let length = deadChime.duration * 1000;
             setTimeout(() => {
-                request.send();
+                setContext((oldContext) => {
+                    return {
+                        ...oldContext,
+                        url: "./music/GAME OVER.wav",
+                    };
+                });
             }, length);
-        });
-        stopRef.current.addEventListener("click", () => {
-            deadChime.pause();
-            audio_context.close();
         });
     }, []);
 
