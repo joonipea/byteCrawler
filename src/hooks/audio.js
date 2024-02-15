@@ -13,7 +13,9 @@ const JukeBox = () => {
 
     function preFetchAudio() {
         const urls = [
+            "./music/map.ogg",
             "./music/map.wav",
+            "./music/FIGHT_REPRISE.ogg",
             "./music/FIGHT_REPRISE.wav",
             "./music/GAME OVER.wav",
             "./music/DEAD.wav",
