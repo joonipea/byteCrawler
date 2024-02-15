@@ -11,8 +11,28 @@ const JukeBox = () => {
     const [gainNode, setGainNode] = useState(null);
     useEffect(() => {}, [context.volume]);
 
+    function preFetchAudio() {
+        const urls = [
+            "./music/map.wav",
+            "./music/FIGHT_REPRISE.wav",
+            "./music/GAME OVER.wav",
+            "./music/DEAD.wav",
+        ];
+        const opts = {
+            "Cache-Control": "private, max-age=2592000, force-cache",
+        };
+        urls.forEach((url) => {
+            fetch(url, {
+                headers: opts,
+            });
+        });
+    }
+
     useEffect(() => {
-        if (!context.url) return;
+        if (!context.url) {
+            preFetchAudio();
+            return;
+        }
 
         async function getBuffer() {
             const data = await fetch(contextCopy.current.url);
