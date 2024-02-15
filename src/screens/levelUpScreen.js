@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { AppContext } from "../appContext";
+import Card from "./dialogs/sub dialogs/card";
 
 const LevelUpScreen = ({ setParent, learnedCards }) => {
     const [context, setContext] = useContext(AppContext);
@@ -10,6 +11,8 @@ const LevelUpScreen = ({ setParent, learnedCards }) => {
         attack: context.character.stats.attack,
         defense: context.character.stats.defense,
         luck: context.character.stats.luck,
+        mp: context.character.stats.mp,
+        maxMP: context.character.stats.maxMP,
     });
 
     const increaseStat = (stat) => {
@@ -76,6 +79,15 @@ const LevelUpScreen = ({ setParent, learnedCards }) => {
                 </button>
             </div>
             <div className="stat-container">
+                <button className="btn" onClick={() => decreaseStat("maxMP")}>
+                    -
+                </button>
+                <p>Max MP: {currentStats.maxMP}</p>
+                <button className="btn" onClick={() => increaseStat("maxMP")}>
+                    +
+                </button>
+            </div>
+            <div className="stat-container">
                 <button className="btn" onClick={() => decreaseStat("attack")}>
                     -
                 </button>
@@ -104,12 +116,10 @@ const LevelUpScreen = ({ setParent, learnedCards }) => {
             </div>
             <div>
                 <p>You Learned:</p>
-                <div className="learned-cards--container">
+                <div className="deck-container">
                     {learnedCards.map((card, index) => {
                         return (
-                            <div key={index} className="learned-card">
-                                <p>{card.name}</p>
-                            </div>
+                            <Card key={index} card={card} onClick={() => {}} />
                         );
                     })}
                 </div>

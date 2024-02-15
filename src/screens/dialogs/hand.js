@@ -8,6 +8,7 @@ import React, {
 import CARDS from "../../assets/cards.json";
 import Card from "./sub dialogs/card";
 import { AppContext } from "../../appContext";
+import { changeStat } from "../../hooks/stats";
 
 const Hand = forwardRef(function Hand({ stats, level, handleCards }, ref) {
     const [hand, setHand] = useState([]);
@@ -111,6 +112,13 @@ const Hand = forwardRef(function Hand({ stats, level, handleCards }, ref) {
                     length={hand.length}
                     card={card}
                     onClick={() => {
+                        if (contextRef.current.character.stats.mp < card.cost)
+                            return;
+                        changeStat(
+                            setContext,
+                            "mp",
+                            contextRef.current.character.stats.mp - card.cost
+                        );
                         handleCards(card);
                         discardCard(index);
                     }}

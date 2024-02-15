@@ -413,6 +413,18 @@ div[class*=" chars"]::after {
     transition: width 0.2s ease-in-out;
 }
 
+.player-battler-mp-bar {
+    width: 128px;
+    height: 16px;
+    border: var(--primary-color) 2px solid;
+}
+
+.player-battler-mp-bar--inner {
+    background-color: #0060fb;
+    height: 100%;
+    transition: width 0.2s ease-in-out;
+}
+
 .damage-message {
     position: absolute;
     font-size: 18px;

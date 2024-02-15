@@ -11,8 +11,9 @@ export const Card = ({ card, i, length, onClick }) => {
             <div className="attack-card-name">{card.name}</div>
             <div className="attack-card-damage">{card.damage}</div>
             <div className="attack-card-description">{card.description}</div>
-            <div
-                className={`attack-card-type--${card.type} attack-card-type`}></div>
+            <div className={`attack-card-type--${card.type} attack-card-type`}>
+                {card.cost}
+            </div>
         </div>
     );
 };

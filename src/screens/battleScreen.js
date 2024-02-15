@@ -38,6 +38,7 @@ const BattleScreen = ({
     contextRef.current = context;
     mobDataRef.current = mobData;
     var audio_context;
+    const charName = context.character.name.replace(/_/g, " ");
 
     function getAvailableCards() {
         if (contextRef.current.deck && contextRef.current.deck.length > 0) {
@@ -102,7 +103,7 @@ const BattleScreen = ({
             return damage;
         }
     }
-
+    /* card actions */
     function handleCards(card) {
         switch (card.target) {
             case "enemy":
@@ -120,12 +121,7 @@ const BattleScreen = ({
         const damage = card.damage;
         setMobHealth((oldHealth) => oldHealth - damage);
 
-        setPlayerAttack(
-            `${context.character.name.replace(
-                /_/g,
-                " "
-            )} attacks ${mobName} for ${damage} damage.`
-        );
+        setPlayerAttack(`${charName} attacks ${mobName} for ${damage} damage.`);
         damageText(mobDamageRef, damage, "red");
         setTurn(1);
     }
@@ -148,12 +144,7 @@ const BattleScreen = ({
 
     function healCard(card) {
         const damage = card.damage * -1;
-        setPlayerAttack(
-            `${context.character.name.replace(/_/g, " ")} heals for ${
-                damage * -1
-            } health.`
-        );
-
+        setPlayerAttack(`${charName} heals for ${damage * -1} health.`);
         damageText(playerDamageRef, damage, "#7bff7b");
         setPlayerHealth(damage);
         setTurn(1);
@@ -212,6 +203,24 @@ const BattleScreen = ({
         return;
     }
 
+    /* end card actions */
+
+    function meditate() {
+        const medAmt = Math.floor(
+            context.character.stats.maxMP * 0.5 +
+                context.character.stats.luck * 0.5
+        );
+        const restored = Math.min(
+            context.character.stats.mp + medAmt,
+            context.character.stats.maxMP
+        );
+        const display = restored - context.character.stats.mp;
+        setPlayerAttack(`${charName} meditates for ${display} MP.`);
+
+        damageText(playerDamageRef, display, "#0060fb");
+        setTurn(1);
+        changeStat(setContext, "mp", restored);
+    }
     function attackPlayer(attacker) {
         if (!attacker.stats) return;
         const damage = calcDamage(attacker.stats.luck, attacker.stats.attack);
@@ -221,10 +230,7 @@ const BattleScreen = ({
             `${attacker.name.replace(
                 /_/g,
                 " "
-            )} attacks ${context.character.name.replace(
-                /_/g,
-                " "
-            )} for ${damage} damage.`
+            )} attacks ${charName} for ${damage} damage.`
         );
         if (contextRef.current.character.stats.health - damage <= 0) return;
         setTurn(0);
@@ -261,6 +267,31 @@ const BattleScreen = ({
         }, 1000);
     }
 
+    function flee() {
+        const success =
+            Math.random() + context.character.stats.luck / 200 > 0.5;
+        if (!success) {
+            setPlayerAttack(`${charName} couldn't get away!`);
+            setTurn(1);
+            return;
+        }
+        setPlayerAttack(`${charName} got away safely!`);
+        setTimeout(() => {
+            cell.classList.remove(mob);
+            cell.classList.add("floor");
+            bindControls();
+            setParent([]);
+            changeStat(setContext, "mp", context.character.stats.maxMP);
+            setContext((oldContext) => {
+                return {
+                    ...oldContext,
+                    url: "./music/map.wav",
+                };
+            });
+        }, 1000);
+        return;
+    }
+
     function victory() {
         const enemyDiv = document.querySelector(".enemy-battler");
         let drops = [];
@@ -293,13 +324,7 @@ const BattleScreen = ({
         enemyDiv.style.opacity = 0;
         setMobAttack("");
         setPlayerAttack(
-            `${context.character.name.replace(
-                /_/g,
-                " "
-            )} has defeated ${mobName}! ${context.character.name.replace(
-                /_/g,
-                " "
-            )} gains ${exp} experience.`
+            `${charName} has defeated ${mobName}! ${charName} gains ${exp} experience.`
         );
 
         setTimeout(() => {
@@ -307,6 +332,7 @@ const BattleScreen = ({
             cell.classList.add("floor");
             bindControls();
             setParent([]);
+            changeStat(setContext, "mp", context.character.stats.maxMP);
             setContext((oldContext) => {
                 return {
                     ...oldContext,
@@ -318,19 +344,16 @@ const BattleScreen = ({
 
     useEffect(() => {
         if (!mobData.stats) return;
+        const inventory = context.character.inventory;
         if (
             context.character.stats.health <= 0 &&
-            !(
-                context.character.inventory &&
-                context.character.inventory.includes("Phoenix Plume")
-            )
+            !(inventory && inventory.includes("Phoenix Plume"))
         )
             return;
-        if (mobHealth <= 0) {
+        if (mobHealth <= 0)
             setTimeout(() => {
                 victory();
             }, 1000);
-        }
     }, [mobHealth]);
 
     // handle death of character
@@ -338,8 +361,6 @@ const BattleScreen = ({
         const ghost = context.character.id;
         const updatedMaps = context.maps.map((map) => {
             if (map.id === context.map.id) {
-                // map is a string[][]
-                // find a random floor tile to place one ghost
                 let x, y;
                 do {
                     x = Math.floor(Math.random() * map.map.length);
@@ -448,9 +469,7 @@ const BattleScreen = ({
                 </div>
                 <div className="player-battler sprite-container">
                     <div ref={playerDamageRef} className="damage-message"></div>
-                    <div className="player-battler-name">
-                        {context.character.name.replace(/_/g, " ")}
-                    </div>
+                    <div className="player-battler-name">{charName}</div>
                     <div className="player-battler-hp-bar">
                         <div
                             className="player-battler-hp-bar--inner"
@@ -466,6 +485,7 @@ const BattleScreen = ({
                         {context.character.stats.health} /{" "}
                         {context.character.stats.maxHealth}
                     </div>
+
                     <div className="player-sprite"></div>
                 </div>
             </div>
@@ -483,6 +503,30 @@ const BattleScreen = ({
                 stats={context.character.stats}
                 level={context.character.level}
             />
+            <div className="battle-options">
+                <button className="btn" onClick={() => flee()}>
+                    Flee
+                </button>
+
+                <button className="btn" onClick={() => meditate()}>
+                    Meditate
+                </button>
+            </div>
+
+            <div className="player-battler-mp-bar">
+                <div
+                    className="player-battler-mp-bar--inner"
+                    style={{
+                        width: `${
+                            (context.character.stats.mp /
+                                context.character.stats.maxMP) *
+                            100
+                        }%`,
+                    }}></div>
+            </div>
+            <div className="player-battler-hp">
+                {context.character.stats.mp} / {context.character.stats.maxMP}
+            </div>
         </div>
     );
 };
