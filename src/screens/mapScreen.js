@@ -26,7 +26,6 @@ const MapScreen = () => {
     const mapRef = useRef(null);
     const [tick, setTick] = useState(0);
     const [score, setScore] = useState(context.score ? context.score : 0);
-    const [gold, setGold] = useState(context.gold ? context.gold : 0);
     const contextRef = useRef(null);
     const stopRef = useRef(null);
     contextRef.current = context;
@@ -235,14 +234,17 @@ const MapScreen = () => {
         if (isItem(nextCell)) {
             const iName = nextCell.classList[1].split(":")[1];
             if (context.codex[iName]) {
-                setGold((oldGold) => oldGold + context.codex[iName].price);
+                const newGold =
+                    contextRef.current.gold + context.codex[iName].price;
+                changeGold(setContext, newGold);
                 nextCell.classList.remove(nextCell.classList[1]);
                 nextCell.classList.add("open-chest");
             } else {
                 getItemPrice(context.worldName, nextCell.classList[1]).then(
                     (item) => {
                         cacheItem(setContext, item);
-                        setGold((oldGold) => oldGold + item.price);
+                        const newGold = contextRef.current.gold + item.price;
+                        changeGold(setContext, newGold);
                         nextCell.classList.remove(nextCell.classList[1]);
                         nextCell.classList.add("open-chest");
                     }
@@ -525,12 +527,6 @@ const MapScreen = () => {
             resetHand();
         }
     }, [score]);
-
-    useEffect(() => {
-        if (gold <= 0) return;
-
-        changeGold(setContext, gold);
-    }, [gold]);
 
     useEffect(() => {
         if (!context.map.map) return;
