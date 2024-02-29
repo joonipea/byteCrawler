@@ -21,6 +21,7 @@ const App = () => {
 
     // init crt settings
     useEffect(() => {
+        if (!localStorage.getItem("saveData")) return;
         const brightness = JSON.parse(
             localStorage.getItem("saveData")
         ).brightness;
