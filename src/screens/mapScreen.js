@@ -234,16 +234,21 @@ const MapScreen = () => {
         if (isItem(nextCell)) {
             const iName = nextCell.classList[1].split(":")[1];
             if (context.codex[iName]) {
-                const newGold =
-                    contextRef.current.gold + context.codex[iName].price;
+                const currentGold = contextRef.current.gold
+                    ? contextRef.current.gold
+                    : 0;
+                const newGold = currentGold + context.codex[iName].price;
                 changeGold(setContext, newGold);
                 nextCell.classList.remove(nextCell.classList[1]);
                 nextCell.classList.add("open-chest");
             } else {
                 getItemPrice(context.worldName, nextCell.classList[1]).then(
                     (item) => {
+                        const currentGold = contextRef.current.gold
+                            ? contextRef.current.gold
+                            : 0;
                         cacheItem(setContext, item);
-                        const newGold = contextRef.current.gold + item.price;
+                        const newGold = currentGold + item.price;
                         changeGold(setContext, newGold);
                         nextCell.classList.remove(nextCell.classList[1]);
                         nextCell.classList.add("open-chest");
