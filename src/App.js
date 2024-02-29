@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./App.css";
 import { AppContext } from "./appContext";
 import StartScreen from "./screens/startScreen";
@@ -9,7 +9,7 @@ import NewGameScreen from "./screens/newGameScreen";
 import GameOverScreen from "./screens/gameOverScreen";
 import SettingsScreen from "./screens/settingsScreen";
 import CreditsScreen from "./screens/creditsScreen";
-import JukeBox from "./hooks/audio"
+import JukeBox from "./hooks/audio";
 const App = () => {
     const [context, setContext] = useContext(AppContext);
 
@@ -17,6 +17,16 @@ const App = () => {
         if (!context.screen) {
             setContext({ ...context, screen: "start" });
         }
+    }, []);
+
+    // init crt settings
+    useEffect(() => {
+        const brightness = JSON.parse(
+            localStorage.getItem("saveData")
+        ).brightness;
+        const blurVal = JSON.parse(localStorage.getItem("saveData")).blurVal;
+        const crt = document.querySelector(".crt");
+        crt.style.filter = `blur(${blurVal}px) brightness(${brightness})`;
     }, []);
 
     return (
