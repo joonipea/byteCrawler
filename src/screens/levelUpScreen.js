@@ -118,8 +118,22 @@ const LevelUpScreen = ({ setParent, learnedCards }) => {
                 <p>You Learned:</p>
                 <div className="deck-container">
                     {learnedCards.map((card, index) => {
+                        let newCard = card;
+                        const cardProfeciencies = newCard.stats;
+                        let damage = 0;
+                        const stats = currentStats;
+                        for (let profeciency of cardProfeciencies) {
+                            damage += Math.ceil(
+                                stats[profeciency[0]] * profeciency[1]
+                            );
+                        }
+                        newCard.damage = damage;
                         return (
-                            <Card key={index} card={card} onClick={() => {}} />
+                            <Card
+                                key={index}
+                                card={newCard}
+                                onClick={() => {}}
+                            />
                         );
                     })}
                 </div>

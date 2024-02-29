@@ -39,10 +39,18 @@ const DeckModal = ({ setParent }) => {
 
     useEffect(() => {
         const newCollection = collection.map((card, index) => {
+            let newCard = card;
+            const cardProfeciencies = newCard.stats;
+            let damage = 0;
+            const stats = contextRef.current.character.stats;
+            for (let profeciency of cardProfeciencies) {
+                damage += Math.ceil(stats[profeciency[0]] * profeciency[1]);
+            }
+            newCard.damage = damage;
             return (
                 <Card
                     onClick={() => addToDeck(card)}
-                    card={card}
+                    card={newCard}
                     index={index}
                     key={index}
                 />
@@ -59,10 +67,18 @@ const DeckModal = ({ setParent }) => {
 
     useEffect(() => {
         const newDeck = deck.map((card, index) => {
+            let newCard = card;
+            const cardProfeciencies = newCard.stats;
+            let damage = 0;
+            const stats = contextRef.current.character.stats;
+            for (let profeciency of cardProfeciencies) {
+                damage += Math.ceil(stats[profeciency[0]] * profeciency[1]);
+            }
+            newCard.damage = damage;
             return (
                 <Card
                     onClick={() => removeFromDeck(index)}
-                    card={card}
+                    card={newCard}
                     index={index}
                     key={index}
                 />
