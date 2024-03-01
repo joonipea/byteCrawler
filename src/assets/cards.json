@@ -244,6 +244,45 @@
         "description": "Cleave with a sword",
         "level": 12
     },
+    "shield-bash": {
+        "name": "Shield Bash",
+        "key": "shield-bash",
+        "type": "weapon",
+        "target": "enemy",
+        "stats": [
+            ["defense", 0.75],
+            ["attack", 0.25]
+        ],
+        "cost": 2,
+        "description": "Bash with a shield",
+        "level": 4
+    },
+    "shield-slam": {
+        "name": "Shield Slam",
+        "key": "shield-slam",
+        "type": "weapon",
+        "target": "enemy",
+        "stats": [
+            ["defense", 1],
+            ["attack", 0.5]
+        ],
+        "cost": 4,
+        "description": "Slam with a shield",
+        "level": 9
+    },
+    "shield-throw": {
+        "name": "Shield Throw",
+        "key": "shield-throw",
+        "type": "weapon",
+        "target": "enemy",
+        "stats": [
+            ["defense", 1.25],
+            ["attack", 0.75]
+        ],
+        "cost": 6,
+        "description": "Throw a shield",
+        "level": 14
+    },
     "stone": {
         "name": "Stone",
         "key": "stone",
