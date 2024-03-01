@@ -691,7 +691,7 @@ div[class*=" chars"]::after {
     width: calc(75 / 21 * 2lvmin - 2px);
     height: calc(75 / 21 * 2lvmin - 2px);
 
-    margin-top: 20%;
+    margin: 20% auto 0% auto;
 }
 
 .enemy-sprite {
@@ -701,7 +701,7 @@ div[class*=" chars"]::after {
     width: calc(75 / 21 * 2lvmin - 2px);
     height: calc(75 / 21 * 2lvmin - 2px);
 
-    margin-top: 20%;
+    margin: 20% auto 0% auto;
 }
 .battle-log {
     border: white 2px solid;
