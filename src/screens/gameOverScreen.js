@@ -90,7 +90,7 @@ const GameOverScreen = () => {
             }
         );
         let data = await response.json();
-        townMap = data[0];
+        townMap = data;
         return townMap;
     }
 

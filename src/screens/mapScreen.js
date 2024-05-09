@@ -351,7 +351,7 @@ const MapScreen = () => {
             generateMap(contextCopy.worldName, contextCopy.map.floor)
                 .then((res) => res.json())
                 .then((newFloor) => {
-                    setNextFloor(newFloor[0]);
+                    setNextFloor(newFloor);
                     setLoadingScreen([]);
                     bindControls();
                 });
