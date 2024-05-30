@@ -23,8 +23,8 @@ Once a player reaches the the threshold, they're rewarded with 4 stat points and
 ### TO DO:
 
 -   [ ] Bestiary
--   [ ] Wall Sprites
--   [ ] Potions as usable itimes
+-   [x] Wall Sprites
+-   [ ] Potions as usable items
 
 ## Town Building
 
