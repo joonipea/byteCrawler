@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import { AppContext } from "../appContext";
 import LevelUpScreen from "./levelUpScreen";
-import PauseScreen from "./pauseScreen";
 import CARDS from "../assets/cards.json";
 import {
     resetHand,
@@ -17,6 +16,7 @@ import {
     moveEnemies,
     handleKeys,
     MovePlayerGlobal,
+    pause,
 } from "./utils";
 import { changeScore } from "../hooks/stats";
 
@@ -34,19 +34,22 @@ const MapScreen = () => {
     const stopRef = useRef(null);
     contextRef.current = context;
 
+    //player movement
+
     let touchstartX = 0;
     let touchendX = 0;
     let touchstartY = 0;
     let touchendY = 0;
-    function handleTouchStart(e) {
+
+    const touchStartListener = useCallback((e) => {
         touchstartX = e.changedTouches[0].screenX;
         touchstartY = e.changedTouches[0].screenY;
-    }
-    function handleTouchEnd(e) {
+    }, []);
+    const touchEndListener = useCallback((e) => {
         touchendX = e.changedTouches[0].screenX;
         touchendY = e.changedTouches[0].screenY;
         checkDirection();
-    }
+    }, []);
     function checkDirection() {
         let xDiff = touchendX - touchstartX;
         let yDiff = touchendY - touchstartY;
@@ -67,18 +70,7 @@ const MapScreen = () => {
         }
     }
 
-    function bindControls() {
-        document.addEventListener("keydown", keysListener);
-        document.addEventListener("touchstart", handleTouchStart);
-        document.addEventListener("touchend", handleTouchEnd);
-    }
-
-    function unBindControls() {
-        document.removeEventListener("keydown", keysListener);
-        document.removeEventListener("touchstart", handleTouchStart);
-        document.removeEventListener("touchend", handleTouchEnd);
-    }
-    function keysListener(e) {
+    const keysListener = useCallback((e) => {
         handleKeys(
             e,
             unBindControls,
@@ -95,7 +87,22 @@ const MapScreen = () => {
             saveGame,
             setTick
         );
+    }, []);
+
+    function bindControls() {
+        console.trace("bindControls");
+        document.addEventListener("keydown", keysListener);
+        document.addEventListener("touchstart", touchStartListener);
+        document.addEventListener("touchend", touchEndListener);
     }
+
+    function unBindControls() {
+        console.trace("unBindControls");
+        document.removeEventListener("keydown", keysListener);
+        document.removeEventListener("touchstart", touchStartListener);
+        document.removeEventListener("touchend", touchEndListener);
+    }
+
     function movePlayer(direction) {
         MovePlayerGlobal(
             direction,
@@ -139,9 +146,7 @@ const MapScreen = () => {
 
     useEffect(() => {
         if (score <= 0) return;
-
         changeScore(setContext, score);
-
         if (
             score >=
             context.character.level ** 1.6 * context.character.rarity * 500
@@ -245,14 +250,9 @@ const MapScreen = () => {
             <div ref={mapRef} id="map"></div>
             <div
                 id="mobile-menu"
-                onClick={() => {
-                    unBindControls();
-                    setDialogScreen(
-                        <PauseScreen
-                            bindControls={bindControls}
-                            setParent={setDialogScreen}></PauseScreen>
-                    );
-                }}></div>
+                onClick={() =>
+                    pause(unBindControls, setDialogScreen, bindControls)
+                }></div>
         </div>
     );
 };
