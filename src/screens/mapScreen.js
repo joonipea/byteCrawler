@@ -36,10 +36,7 @@ const MapScreen = () => {
 
     //player movement
 
-    let touchstartX = 0;
-    let touchendX = 0;
-    let touchstartY = 0;
-    let touchendY = 0;
+    let touchstartX, touchendX, touchstartY, touchendY;
 
     const touchStartListener = useCallback((e) => {
         touchstartX = e.changedTouches[0].screenX;
