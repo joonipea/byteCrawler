@@ -87,14 +87,12 @@ const MapScreen = () => {
     }, []);
 
     function bindControls() {
-        console.trace("bindControls");
         document.addEventListener("keydown", keysListener);
         document.addEventListener("touchstart", touchStartListener);
         document.addEventListener("touchend", touchEndListener);
     }
 
     function unBindControls() {
-        console.trace("unBindControls");
         document.removeEventListener("keydown", keysListener);
         document.removeEventListener("touchstart", touchStartListener);
         document.removeEventListener("touchend", touchEndListener);
