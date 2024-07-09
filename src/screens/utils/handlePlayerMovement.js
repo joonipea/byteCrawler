@@ -137,12 +137,14 @@ function handleNextCell(
         Array.from(cell.classList).some((c) => c.startsWith("chars"));
     if (nextCell.classList.contains("exit")) {
         handleExit(
+            bindControls,
             unBindControls,
             setLoadingScreen,
             contextRef,
             context,
             setContext,
-            setNextFloor
+            setNextFloor,
+            setDialogScreen
         );
     }
     if (isTomb(nextCell)) {
@@ -325,17 +327,28 @@ function handleTomb(
 }
 
 function handleExit(
+    bindControls,
     unBindControls,
     setLoadingScreen,
     contextRef,
     context,
     setContext,
-    setNextFloor
+    setNextFloor,
+    setDialogScreen
 ) {
     unBindControls();
-    setLoadingScreen(<LoadingScreen></LoadingScreen>);
-    nextMap(contextRef, setNextFloor, setLoadingScreen, setContext);
-    resetHand(contextRef, context, setContext);
+    setDialogScreen(
+        <DialogScreen
+            bindControls={bindControls}
+            type={"ladder"}
+            setParent={setDialogScreen}
+            onConfirm={exit}></DialogScreen>
+    );
+    function exit() {
+        setLoadingScreen(<LoadingScreen></LoadingScreen>);
+        nextMap(contextRef, setNextFloor, setLoadingScreen, setContext);
+        resetHand(contextRef, context, setContext);
+    }
 }
 
 function setNextCell(direction, nextCell, playerParent, playerIndex, player) {

@@ -3,6 +3,7 @@ import Monolith from "./dialogs/monolith";
 import Temple from "./dialogs/temple";
 import Merchant from "./dialogs/merchant";
 import Ghost from "./dialogs/ghost";
+import Exit from "./dialogs/exit";
 
 const DialogScreen = ({
     setParent,
@@ -10,6 +11,7 @@ const DialogScreen = ({
     type,
     bindControls,
     setBattleScreen,
+    onConfirm,
 }) => {
     const [dialogText, setDialogText] = useState("");
     useEffect(() => {
@@ -30,6 +32,10 @@ const DialogScreen = ({
                         setParent={setParent}
                     />
                 );
+            case "ladder":
+                setDialogText(
+                    <Exit onConfirm={onConfirm} setParent={setParent} />
+                );
             default:
                 break;
         }
@@ -43,7 +49,7 @@ const DialogScreen = ({
                     bindControls();
                     setParent([]);
                 }}>
-                Leave
+                Close
             </button>
         </div>
     );
