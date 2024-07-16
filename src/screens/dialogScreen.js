@@ -32,10 +32,12 @@ const DialogScreen = ({
                         setParent={setParent}
                     />
                 );
+                break;
             case "ladder":
                 setDialogText(
                     <Exit onConfirm={onConfirm} setParent={setParent} />
                 );
+                break;
             default:
                 break;
         }
