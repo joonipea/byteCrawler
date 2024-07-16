@@ -66,11 +66,11 @@ const BattleScreen = ({
         })
             .then((res) => res.json())
             .then((data) => {
-                cacheMob(setContext, data[0]);
-                setMobData(data[0]);
-                setMobHealth(data[0].stats.health);
-                setMobMaxHealth(data[0].stats.maxHealth);
-                setMobName(data[0].name.replace(/_/g, " "));
+                cacheMob(setContext, data);
+                setMobData(data);
+                setMobHealth(data.stats.health);
+                setMobMaxHealth(data.stats.maxHealth);
+                setMobName(data.name.replace(/_/g, " "));
             });
     }, [mob]);
 
