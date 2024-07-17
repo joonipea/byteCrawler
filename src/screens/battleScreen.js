@@ -309,7 +309,7 @@ const BattleScreen = ({
 
         const expMultiplier =
             context.character.inventory &&
-            context.character.inventory.includes("Cracked Wise Glasses")
+            context.character.inventory.includes("Wise Glasses")
                 ? 1.5
                 : 1;
         let exp = 0;

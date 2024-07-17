@@ -59,7 +59,7 @@ const ITEMS = {
             description: "A phoenix plume. Allows you to revive once.",
             price: Math.floor(Math.random() * 100) + 75,
         },
-        "Cracked Wise Glasses": {
+        "Wise Glasses": {
             description: "Wise glasses. Let's you learn more from encounters.",
             price: Math.floor(Math.random() * 100) + 75,
         },
@@ -101,7 +101,7 @@ const ITEMS = {
             description: "A phoenix plume. Allows you to revive once.",
             price: Math.floor(Math.random() * 100) + 75,
         },
-        "Cracked Wise Glasses": {
+        "Wise Glasses": {
             description: "Wise glasses. Let's you learn more from encounters.",
             price: Math.floor(Math.random() * 100) + 75,
         },
@@ -143,7 +143,7 @@ const ITEMS = {
             description: "A phoenix plume. Allows you to revive once.",
             price: Math.floor(Math.random() * 100) + 75,
         },
-        "Cracked Wise Glasses": {
+        "Wise Glasses": {
             description: "Wise glasses. Let's you learn more from encounters.",
             price: Math.floor(Math.random() * 100) + 75,
         },
@@ -185,7 +185,7 @@ const ITEMS = {
             description: "A phoenix plume. Allows you to revive once.",
             price: Math.floor(Math.random() * 100) + 75,
         },
-        "Cracked Wise Glasses": {
+        "Wise Glasses": {
             description: "Wise glasses. Let's you learn more from encounters.",
             price: Math.floor(Math.random() * 100) + 75,
         },
@@ -227,7 +227,7 @@ const ITEMS = {
             description: "A phoenix plume. Allows you to revive once.",
             price: Math.floor(Math.random() * 100) + 75,
         },
-        "Cracked Wise Glasses": {
+        "Wise Glasses": {
             description: "Wise glasses. Let's you learn more from encounters.",
             price: Math.floor(Math.random() * 100) + 75,
         },
@@ -269,7 +269,7 @@ const ITEMS = {
             description: "A phoenix plume. Allows you to revive once.",
             price: Math.floor(Math.random() * 100) + 75,
         },
-        "Cracked Wise Glasses": {
+        "Wise Glasses": {
             description: "Wise glasses. Let's you learn more from encounters.",
             price: Math.floor(Math.random() * 100) + 75,
         },
@@ -311,7 +311,7 @@ const ITEMS = {
             description: "A phoenix plume. Allows you to revive once.",
             price: Math.floor(Math.random() * 100) + 75,
         },
-        "Cracked Wise Glasses": {
+        "Wise Glasses": {
             description: "Wise glasses. Let's you learn more from encounters.",
             price: Math.floor(Math.random() * 100) + 75,
         },
@@ -353,7 +353,7 @@ const ITEMS = {
             description: "A phoenix plume. Allows you to revive once.",
             price: Math.floor(Math.random() * 100) + 75,
         },
-        "Cracked Wise Glasses": {
+        "Wise Glasses": {
             description: "Wise glasses. Let's you learn more from encounters.",
             price: Math.floor(Math.random() * 100) + 75,
         },
@@ -395,7 +395,7 @@ const ITEMS = {
             description: "A phoenix plume. Allows you to revive once.",
             price: Math.floor(Math.random() * 100) + 75,
         },
-        "Cracked Wise Glasses": {
+        "Wise Glasses": {
             description: "Wise glasses. Let's you learn more from encounters.",
             price: Math.floor(Math.random() * 100) + 75,
         },
